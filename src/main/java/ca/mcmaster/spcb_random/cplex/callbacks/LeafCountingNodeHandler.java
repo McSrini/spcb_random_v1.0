@@ -5,7 +5,7 @@
  */
 package ca.mcmaster.spcb_random.cplex.callbacks;
 
-import static ca.mcmaster.spcb_random.Constants.*;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.*;
 import ca.mcmaster.spcb_random.cplex.datatypes.NodeAttachment;
 import ilog.concert.IloException;
 import ilog.cplex.IloCplex;

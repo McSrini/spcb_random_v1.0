@@ -6,7 +6,7 @@
 package ca.mcmaster.spcb_random.cca;
 
 import ca.mcmaster.spcb_random.cplex.datatypes.BranchingInstruction;
-import static ca.mcmaster.spcb_random.Constants.*;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.*;
 import ca.mcmaster.spcb_random.cplex.ActiveSubtree;
 import java.io.Serializable;
 import static java.lang.System.exit;

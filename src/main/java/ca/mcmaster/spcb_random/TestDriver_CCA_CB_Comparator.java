@@ -5,7 +5,7 @@
  */
 package ca.mcmaster.spcb_random;
    
-import static ca.mcmaster.spcb_random.Constants.*;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.*;
 import ca.mcmaster.spcb_random.cb.CBInstructionTree;
 import ca.mcmaster.spcb_random.cca.CCANode;
 import ca.mcmaster.spcb_random.cplex.*;
@@ -67,18 +67,12 @@ public class TestDriver_CCA_CB_Comparator {
     //seymour-disj_10 ru=20000, NUM_PARTITIONS =  1000 , sct = 6m, ts=2m, 6m:3m 6m:1m size >=20/10, packfact=12 
      
     
-    public static   String MIP_NAME_UNDER_TEST ="a1c1s1";
-    public static   double MIP_WELLKNOWN_SOLUTION =  11503.444125 ;
-    public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 10000;   // or 5000
     
     /*
     public static   String MIP_NAME_UNDER_TEST ="timtab1";
     public static   double MIP_WELLKNOWN_SOLUTION =  764772;
     public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 2000;  */
  
-    private static  int NUM_PARTITIONS =100;
-    private static double EXPECTED_LEAFS_PER_PARTITION = (RAMP_UP_TO_THIS_MANY_LEAFS +DOUBLE_ZERO)/NUM_PARTITIONS;
-    
     //private static final int SOLUTION_CYCLE_Tu           fgggd hjhhIME_MINUTES = THREE;
      
     public static void main(String[] args) throws Exception {

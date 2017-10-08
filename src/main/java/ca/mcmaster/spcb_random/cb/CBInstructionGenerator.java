@@ -7,7 +7,7 @@ package ca.mcmaster.spcb_random.cb;
 
 import ca.mcmaster.spcb_random.cca.CCANode;
 import ca.mcmaster.spcb_random.utilities.CCAUtilities;
-import static ca.mcmaster.spcb_random.Constants.*;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.*;
 import ca.mcmaster.spcb_random.cplex.datatypes.NodeAttachment;
 import static java.lang.System.exit;
 import java.util.*;

@@ -9,7 +9,7 @@ import ca.mcmaster.spcb_random.cplex.datatypes.SolutionVector;
 import ca.mcmaster.spcb_random.cplex.NodeSelectionStartegyEnum;
 import ca.mcmaster.spcb_random.cplex.ActiveSubtree;
 import ca.mcmaster.spcb_random.cplex.ActiveSubtreeCollection;
-import static ca.mcmaster.spcb_random.Constants.*;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.*;
 import ca.mcmaster.spcb_random.cb.CBInstructionTree;
 import ca.mcmaster.spcb_random.cca.CCANode;
 import ca.mcmaster.spcb_random.cplex.datatypes.*;

@@ -6,7 +6,7 @@
 package ca.mcmaster.spcb_random.cplex.datatypes;
 
 import ca.mcmaster.spcb_random.cca.CCANode;
-import static ca.mcmaster.spcb_random.Constants.*; 
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.*; 
 import ilog.concert.IloNumVar;
 import ilog.cplex.IloCplex;
 import java.util.ArrayList;

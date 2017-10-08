@@ -5,7 +5,7 @@
  */
 package ca.mcmaster.spcb_random.cplex.datatypes;
 
-import static ca.mcmaster.spcb_random.Constants.*;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.*;
 import java.io.Serializable;
 import java.util.*;
 import java.util.List;

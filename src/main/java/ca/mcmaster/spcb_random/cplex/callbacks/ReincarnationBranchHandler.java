@@ -6,14 +6,14 @@
 package ca.mcmaster.spcb_random.cplex.callbacks;
 
 import ca.mcmaster.spcb_random.utilities.BranchHandlerUtilities; 
-import static ca.mcmaster.spcb_random.Constants.IS_MAXIMIZATION;
-import static ca.mcmaster.spcb_random.Constants.LOG_FILE_EXTENSION;
-import static ca.mcmaster.spcb_random.Constants.LOG_FOLDER;
-import static ca.mcmaster.spcb_random.Constants.MINUS_INFINITY;
-import static ca.mcmaster.spcb_random.Constants.ONE;
-import static ca.mcmaster.spcb_random.Constants.PLUS_INFINITY;
-import static ca.mcmaster.spcb_random.Constants.TWO;
-import static ca.mcmaster.spcb_random.Constants.ZERO;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.IS_MAXIMIZATION;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.LOG_FILE_EXTENSION;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.LOG_FOLDER;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.MINUS_INFINITY;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.ONE;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.PLUS_INFINITY;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.TWO;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.ZERO;
 import ca.mcmaster.spcb_random.cb.ReincarnationMaps;
 import ca.mcmaster.spcb_random.cca.CCANode;
 import ca.mcmaster.spcb_random.cplex.datatypes.BranchingInstruction;

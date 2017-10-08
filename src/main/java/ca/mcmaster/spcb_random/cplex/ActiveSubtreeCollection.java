@@ -5,13 +5,13 @@
  */
 package ca.mcmaster.spcb_random.cplex;
 
-import static ca.mcmaster.spcb_random.Constants.IS_MAXIMIZATION;
-import static ca.mcmaster.spcb_random.Constants.LOG_FILE_EXTENSION;
-import static ca.mcmaster.spcb_random.Constants.LOG_FOLDER;
-import static ca.mcmaster.spcb_random.Constants.MINUS_INFINITY;
-import static ca.mcmaster.spcb_random.Constants.ONE;
-import static ca.mcmaster.spcb_random.Constants.PLUS_INFINITY;
-import static ca.mcmaster.spcb_random.Constants.*;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.IS_MAXIMIZATION;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.LOG_FILE_EXTENSION;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.LOG_FOLDER;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.MINUS_INFINITY;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.ONE;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.PLUS_INFINITY;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.*;
 import ca.mcmaster.spcb_random.cb.CBInstructionTree;
 import ca.mcmaster.spcb_random.cca.CCANode;
 import static ca.mcmaster.spcb_random.cplex.NodeSelectionStartegyEnum.BEST_ESTIMATE_FIRST;

@@ -6,7 +6,7 @@
 package ca.mcmaster.spcb_random.cca;
 
 import ca.mcmaster.spcb_random.utilities.CCAUtilities;
-import static ca.mcmaster.spcb_random.Constants.*;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.*;
 import static ca.mcmaster.spcb_random.utilities.CCAUtilities.*;
 import ca.mcmaster.spcb_random.cplex.ActiveSubtree;
 import ca.mcmaster.spcb_random.cplex.datatypes.BranchingInstruction;

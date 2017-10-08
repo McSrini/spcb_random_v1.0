@@ -6,7 +6,7 @@
 package ca.mcmaster.spcb_random.cplex.callbacks;
 
 import ca.mcmaster.spcb_random.utilities.BranchHandlerUtilities;
-import static ca.mcmaster.spcb_random.Constants.*;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.*;
 import ca.mcmaster.spcb_random.cplex.datatypes.BranchingInstruction;
 import ca.mcmaster.spcb_random.cplex.datatypes.NodeAttachment;
 import ilog.concert.IloException;

@@ -5,12 +5,12 @@
  */
 package ca.mcmaster.spcb_random.cplex.callbacks;
 
-import static ca.mcmaster.spcb_random.Constants.IS_MAXIMIZATION;
-import static ca.mcmaster.spcb_random.Constants.LOG_FILE_EXTENSION;
-import static ca.mcmaster.spcb_random.Constants.LOG_FOLDER;
-import static ca.mcmaster.spcb_random.Constants.MINUS_INFINITY;
-import static ca.mcmaster.spcb_random.Constants.PLUS_INFINITY;
-import static ca.mcmaster.spcb_random.Constants.ZERO;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.IS_MAXIMIZATION;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.LOG_FILE_EXTENSION;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.LOG_FOLDER;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.MINUS_INFINITY;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.PLUS_INFINITY;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.ZERO;
 import ilog.concert.IloException;
 import ilog.cplex.IloCplex;
 import static java.lang.System.exit;

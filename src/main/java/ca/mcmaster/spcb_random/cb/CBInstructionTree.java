@@ -5,7 +5,7 @@
  */
 package ca.mcmaster.spcb_random.cb;
 
-import static ca.mcmaster.spcb_random.Constants.*;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.*;
 import ca.mcmaster.spcb_random.cca.CCANode; 
 import java.io.Serializable;
 import static java.lang.System.exit;

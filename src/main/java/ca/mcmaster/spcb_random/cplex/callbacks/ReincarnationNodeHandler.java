@@ -6,9 +6,9 @@
 package ca.mcmaster.spcb_random.cplex.callbacks;
 
 import ca.mcmaster.spcb_random.cplex.datatypes.NodeAttachment;
-import static ca.mcmaster.spcb_random.Constants.LOG_FILE_EXTENSION;
-import static ca.mcmaster.spcb_random.Constants.LOG_FOLDER;
-import static ca.mcmaster.spcb_random.Constants.*;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.LOG_FILE_EXTENSION;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.LOG_FOLDER;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.*;
 import ca.mcmaster.spcb_random.cb.ReincarnationMaps;
 import ilog.concert.IloException;
 import ilog.cplex.IloCplex;

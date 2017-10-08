@@ -6,7 +6,7 @@
 package ca.mcmaster.spcb_random.utilities;
 
 import ca.mcmaster.spcb_random.cplex.datatypes.NodeAttachment;
-import static ca.mcmaster.spcb_random.Constants.*;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.*;
 import ilog.cplex.IloCplex;
 import java.util.*; 
 

@@ -5,10 +5,10 @@
  */
 package ca.mcmaster.spcb_random.utilities;
 
-import static ca.mcmaster.spcb_random.Constants.LOG_FILE_EXTENSION;
-import static ca.mcmaster.spcb_random.Constants.LOG_FOLDER;
-import static ca.mcmaster.spcb_random.Constants.ONE;
-import static ca.mcmaster.spcb_random.Constants.ZERO;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.LOG_FILE_EXTENSION;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.LOG_FOLDER;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.ONE;
+import static ca.mcmaster.spcb_random.ConstantsAndParameters.ZERO;
 import ca.mcmaster.spcb_random.cplex.ActiveSubtree;
 import ca.mcmaster.spcb_random.cplex.datatypes.BranchingInstruction;
 import ca.mcmaster.spcb_random.cplex.datatypes.NodeAttachment;
