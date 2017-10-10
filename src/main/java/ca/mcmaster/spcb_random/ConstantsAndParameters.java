@@ -61,10 +61,11 @@ public class ConstantsAndParameters {
     public static   double MINIMUM_TIME_SLICE_IN_MINUTES_PER_ACTIVE_SUBTREE = 0.5 ;//30 seconds
     public static final int SOLUTION_CYCLE_TIME_MINUTES = 8;
     
-    public static   String MIP_NAME_UNDER_TEST ="a1c1s1";
-    public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 10000;   // or 5000    
-    public static   double MIP_WELLKNOWN_SOLUTION =  11503.444125;  
-    public static  int NUM_PARTITIONS =100;
+    public static   String MIP_NAME_UNDER_TEST ="timtab1";
+    public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 20;   // or 5000    
+    public static   double MIP_WELLKNOWN_SOLUTION =  764772;  
+    public static  int NUM_PARTITIONS =4;
+    
     public static double EXPECTED_LEAFS_PER_PARTITION = (RAMP_UP_TO_THIS_MANY_LEAFS +DOUBLE_ZERO)/NUM_PARTITIONS;
     
     

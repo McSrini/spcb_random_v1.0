@@ -224,7 +224,7 @@ public class ActiveSubtree {
     }
     
     //for testing
-    public void simpleSolve(double timeLimitMinutes, boolean useEmptyCallback, boolean useInMemory, List<String> pruneList) throws IloException{
+    public void simpleSolve(double timeLimitMinutes, boolean useEmptyCallback,   List<String> pruneList) throws IloException{
         logger.debug("simpleSolve Started at "+LocalDateTime.now()) ;
         cplex.clearCallbacks();
         if (useEmptyCallback) {
@@ -420,19 +420,32 @@ public class ActiveSubtree {
     public List<String> getPruneList ( CCANode ccaNode) {
         return ccaNode.pruneList;
     }
-    
-      
+         
     public void setCutoffValue(double cutoff) throws IloException {
-        if (!IS_MAXIMIZATION) {
+        boolean conditionMin = !IS_MAXIMIZATION && cutoff <  cplex.getParam(    IloCplex.Param.MIP.Tolerances.UpperCutoff );
+        boolean conditionMax = IS_MAXIMIZATION  && cutoff >  cplex.getParam(    IloCplex.Param.MIP.Tolerances.LowerCutoff );
+        
+        double currentCutoff = cplex.getParam(    IloCplex.Param.MIP.Tolerances.UpperCutoff );
+        if (IS_MAXIMIZATION ) currentCutoff = cplex.getParam(    IloCplex.Param.MIP.Tolerances.LowerCutoff );
+        
+        logger.warn ("currentCutoff " + currentCutoff + " cutoff " + cutoff + " conditionMin "+ conditionMin) ;
+        
+        if (conditionMin || conditionMax ) {
+            logger.warn ( "Setting cuttoff to "+ cutoff + " for tree " + this.guid + " from current cutoff " + currentCutoff);
+        }
+        
+        if (conditionMin) {
             cplex.setParam(    IloCplex.Param.MIP.Tolerances.UpperCutoff, cutoff);
-        }else {
+        }else if (conditionMax){
             cplex.setParam(    IloCplex.Param.MIP.Tolerances.LowerCutoff, cutoff);
         }
     }
     
     public void setTimeLimitMinutes (double timeLimitMinutes ) throws IloException {
         
-        if (timeLimitMinutes>ZERO) cplex.setParam(IloCplex.Param.TimeLimit, timeLimitMinutes*SIXTY); 
+        if (timeLimitMinutes>ZERO) {
+            cplex.setParam(IloCplex.Param.TimeLimit, timeLimitMinutes*SIXTY);
+        }                else cplex.setParam(IloCplex.Param.TimeLimit, HUNDRED*SIXTY);
          
     }
     

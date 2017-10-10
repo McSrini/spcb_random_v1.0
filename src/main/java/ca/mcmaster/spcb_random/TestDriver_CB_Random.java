@@ -69,20 +69,12 @@ public class TestDriver_CB_Random {
     //janos-us-DDM ru=20000, NUM_PARTITIONS = 1150 , 580, 250 , sct = 6m, ts=2m, 6m:3m 6m:1m 
     //seymour ru=10000, NUM_PARTITIONS =  200 , sct = 6m, ts=2m, 6m:3m 6m:1m
     //seymour-disj_10 ru=20000, NUM_PARTITIONS =  1000 , sct = 6m, ts=2m, 6m:3m 6m:1m size >=20/10, packfact=12 
-     
-    
-    public static   String MIP_NAME_UNDER_TEST ="a1c1s1";
-    public static   double MIP_WELLKNOWN_SOLUTION =  11503.444125 ;
-    public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 10000;   // or 5000
-    
+   
     /*
     public static   String MIP_NAME_UNDER_TEST ="timtab1";
     public static   double MIP_WELLKNOWN_SOLUTION =  764772;
     public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 2000;  */
- 
-    private static  int NUM_PARTITIONS =100;
-    private static double EXPECTED_LEAFS_PER_PARTITION = (RAMP_UP_TO_THIS_MANY_LEAFS +DOUBLE_ZERO)/NUM_PARTITIONS;
-    
+  
     //private static final int SOLUTION_CYCLE_Tu           fgggd hjhhIME_MINUTES = THREE;
      
     public static void main(String[] args) throws Exception {
@@ -111,7 +103,8 @@ public class TestDriver_CB_Random {
         //MPS_FILE_ON_DISK =  "F:\\temporary files here\\"+MIP_NAME_UNDER_TEST+".mps"; //windows
         MPS_FILE_ON_DISK =   MIP_NAME_UNDER_TEST +".mps";  //linux
                 
-        logger.debug ("starting ramp up") ;  
+        logger.debug ("starting ramp up " + MPS_FILE_ON_DISK + " partitions " + NUM_PARTITIONS +
+                " solution cycle time " + SOLUTION_CYCLE_TIME_MINUTES + " tree slice " + TIME_SLICE_IN_MINUTES_PER_ACTIVE_SUBTREE) ;  
         ActiveSubtree activeSubtreeForRampUp = new ActiveSubtree () ;
         activeSubtreeForRampUp.solve( RAMP_UP_TO_THIS_MANY_LEAFS, PLUS_INFINITY, MILLION, true, false); 
                        
@@ -139,12 +132,12 @@ public class TestDriver_CB_Random {
         }
         
         //we accept all generated candidates, see later
+        // solve with CB on each partition, and compare with SBF and BEF on each partition
         
         //for every accepted CCA node, we create an active subtree collection that has all its leafs
         List<ActiveSubtreeCollection> activeSubtreeCollectionListSBF = new ArrayList<ActiveSubtreeCollection>();
         List<ActiveSubtreeCollection> activeSubtreeCollectionListBEF = new ArrayList<ActiveSubtreeCollection>();
-        //we also create an ActiveSubtreeCollectionlist where each collection on a partition only has 1 element, namely the CCA node assigned to it.
-        List<ActiveSubtreeCollection> activeSubtreeCollectionListCCA = new ArrayList<ActiveSubtreeCollection>();
+        
         //and here are the CB instruction trees for each CCA node, and a subtree collection for CB
         List< CBInstructionTree>  cbInstructionTreeList  =new ArrayList<CBInstructionTree > () ;   
         List<ActiveSubtreeCollection> activeSubtreeCollectionListCB = new ArrayList<ActiveSubtreeCollection>();
@@ -167,7 +160,7 @@ public class TestDriver_CB_Random {
                 
                 //All leafs need to be converted into CCA node representations, since solvers deal with CCA nodes and not leafs
                 //These CCA nodes are of course fake CCA nodes
-                List<CCANode> ccaLeafNodeListSBF = activeSubtreeForRampUp.getActiveLeafsAsCCANodes( ccaNode.pruneList);                                      
+                List<CCANode> ccaLeafNodeListSBF = activeSubtreeForRampUp.getActiveLeafsAsCCANodes(  listOfComponentLeafsForCandidateCCANodes.get(index));                                      
                 //now create an active subtree collection , which represents the work on one partition by doing a round-robin thru these leafs
                 ActiveSubtreeCollection astc = new ActiveSubtreeCollection (ccaLeafNodeListSBF, activeSubtreeForRampUp.instructionsFromOriginalMip, 
                         incumbentValueAfterRampup, bestKnownSolutionAfterRampup!=null, index) ;
@@ -179,14 +172,10 @@ public class TestDriver_CB_Random {
                 astc = new ActiveSubtreeCollection (ccaLeafNodeListBEF, activeSubtreeForRampUp.instructionsFromOriginalMip, 
                         incumbentValueAfterRampup, bestKnownSolutionAfterRampup!=null, index) ;
                 activeSubtreeCollectionListBEF .add(astc);
-                
-                //we also create another collection list, with only the accepted CCA nodes, one on each partition
+                                
+                //create a list of CB instuction trees, and an active subtree collection with all the corresponding CCA  nodes
                 List<CCANode> ccaSingletonLeafNodeList = new ArrayList<CCANode> ();
                 ccaSingletonLeafNodeList.add(ccaNode);
-                astc = new ActiveSubtreeCollection ( ccaSingletonLeafNodeList, activeSubtreeForRampUp.instructionsFromOriginalMip, incumbentValueAfterRampup, bestKnownSolutionAfterRampup!=null, index) ;
-                activeSubtreeCollectionListCCA.add(astc);
-                
-                //create a list of CB instuction trees, and an active subtree collection with all the corresponding CCA  nodes
                 CBInstructionTree tree = activeSubtreeForRampUp.getCBInstructionTree(ccaNode, listOfComponentLeafsForCandidateCCANodes.get(index));
                 cbInstructionTreeList.add( tree); 
                 astc = new ActiveSubtreeCollection ( ccaSingletonLeafNodeList, activeSubtreeForRampUp.instructionsFromOriginalMip, incumbentValueAfterRampup, bestKnownSolutionAfterRampup!=null, index) ;
@@ -208,9 +197,13 @@ public class TestDriver_CB_Random {
         }
          
               
- 
         
         //PREPARATIONS COMPLETE
+        logger.debug ("Ramp up created " +activeSubtreeForRampUp.getActiveLeafCount() +" leafs.") ;
+        logger.warn  ("NUM_PARTITIONS is actually " + activeSubtreeCollectionListCB.size() + " requested was " +  NUM_PARTITIONS);
+        if (activeSubtreeCollectionListCB.size()!=NUM_PARTITIONS) {
+            exit(1);
+        }
         activeSubtreeForRampUp.end();
        
         
@@ -223,52 +216,15 @@ public class TestDriver_CB_Random {
         //init the best known solution value and vector which will be updated as the solution progresses
         //Initialize them to values after ramp up
         //SolutionVector  bestKnownSolution = bestKnownSolutionAfterRampup ==null? null : activeSubtreeONE.getSolutionVector();
-        Double  incumbentValue= incumbentValueAfterRampup;
+        Double  incumbentGlobal= incumbentValueAfterRampup;
          
          
-        //the first test uses CCA , the second test will use raw leafs
-        
         //TEST 1 : with CCA
         /******
            CANNOT   RUN CCA TEST WHEN LEAFS SELECTED AT RANDOM !!
          *********/
         int iterationNumber=ZERO;
-        for (; iterationNumber<-ONE   ;iterationNumber++){ 
-               
-            if(isHaltFilePresent())  break; //halt!
-            logger.debug("starting CCA iteration Number "+iterationNumber);
-                 
-            //simulate 1 map iteration accross the "cluster", note that selection stratgey does not matter because
-            //we have only 1 job per partition
-            int numRemainingPartitions = simulateOneMapIteration ( activeSubtreeCollectionListCCA, 
-                                                   NodeSelectionStartegyEnum.STRICT_BEST_FIRST,    incumbentValue,
-                                                   false, null);
-                
-            //update driver's copy of incumbent
-            for (ActiveSubtreeCollection astc : activeSubtreeCollectionListCCA){
-                if (IS_MAXIMIZATION) {
-                    incumbentValue= Math.max(incumbentValue,  astc.getIncumbentValue());
-                }else {
-                    incumbentValue= Math.min(incumbentValue,  astc.getIncumbentValue());
-                }
-            }
-
-            logger.debug ( "Number of reamining partitions is "+ numRemainingPartitions);                
-
-            //do another iteration involving every partition, unless we are done
-            if (ZERO==numRemainingPartitions)  break;
-            
-        }//for greenFlagForIterations
-        
-        //print results
         long numNodeRelaxationsSolved = ZERO;
-        for (ActiveSubtreeCollection astc : activeSubtreeCollectionListCCA) {
-            numNodeRelaxationsSolved += astc.getNumNodeRelaxationsSolved();
-        } 
-        logger.debug(" CCA test ended at iteration Number "+iterationNumber + " with incumbent "+
-                incumbentValue + " and " + numNodeRelaxationsSolved+" leafs solved");
-        
-        
         
          
         //HERE is part 2 of the test, where we run individual leafs and compare results with CCA               
@@ -290,30 +246,31 @@ public class TestDriver_CB_Random {
             logger.info(" \n\n\ntest started for Selection Strategy " + nodeSelectionStrategy  );
             
             //reset incumbent to value after ramp up
-            incumbentValue= incumbentValueAfterRampup;
+            incumbentGlobal= incumbentValueAfterRampup;
             
             //now run the iterations
                  
             for (  iterationNumber=ZERO;   ; iterationNumber++){
    
                 if(isHaltFilePresent())  break;//halt
-                logger.debug("starting test2 iteration Number "+iterationNumber);
+                logger.debug("starting " +nodeSelectionStrategy+ " iteration Number "+iterationNumber);
 
                 int numRemainingPartitions = simulateOneMapIteration ( activeSubtreeCollectionList, 
-                                                   nodeSelectionStrategy,    incumbentValue,
+                                                   nodeSelectionStrategy,    incumbentGlobal,
                                                    false, null);
                 
                 //update driver's copy of incumbent
                 for (ActiveSubtreeCollection astc : activeSubtreeCollectionList){
                     if (IS_MAXIMIZATION) {
-                        incumbentValue= Math.max(incumbentValue,  astc.getIncumbentValue());
+                        incumbentGlobal= Math.max(incumbentGlobal,  astc.getIncumbentValue());
                     }else {
-                        incumbentValue= Math.min(incumbentValue,  astc.getIncumbentValue());
+                        incumbentGlobal= Math.min(incumbentGlobal,  astc.getIncumbentValue());
                     }
                 }
                 
-                logger.debug ( "Number of reamining partitions is "+ numRemainingPartitions);                
-            
+                logger.debug ( "Number of reamining partitions is "+ numRemainingPartitions);    
+                logger.debug ("Global incumbent is "+incumbentGlobal);
+                
                 //do another iteration involving every partition, unless we are done
                 if (ZERO==numRemainingPartitions)  break;
 
@@ -321,11 +278,11 @@ public class TestDriver_CB_Random {
 
             //print results
             numNodeRelaxationsSolved = ZERO;
-            for (ActiveSubtreeCollection astc : activeSubtreeCollectionListCCA) {
+            for (ActiveSubtreeCollection astc : activeSubtreeCollectionList) {
                 numNodeRelaxationsSolved += astc.getNumNodeRelaxationsSolved();
             } 
             logger.debug(" Individual solve test with "+ nodeSelectionStrategy +" ended at iteration Number "+
-                    iterationNumber+ " with incumbent "+incumbentValue + " and number of leafs solved " + numNodeRelaxationsSolved);
+                    iterationNumber+ " with incumbent "+incumbentGlobal + " and number of leafs solved " + numNodeRelaxationsSolved);
             //print status of every partition
             for (int partitionNumber = ZERO;partitionNumber < NUM_PARTITIONS; partitionNumber++ ){
 
@@ -337,11 +294,13 @@ public class TestDriver_CB_Random {
             }//print status of every partition
             
             logger.info(" test completed Selection Strategy for " + nodeSelectionStrategy);
-            
+             
         }//for all node sequencing strategies
         
         
         //Test 3 , use CB
+        ///reset global incumbent because we start right after ramp up
+        incumbentGlobal= incumbentValueAfterRampup;
         for (iterationNumber=ZERO;   ;iterationNumber++){ 
                
             if(isHaltFilePresent())  break; //halt!
@@ -351,35 +310,36 @@ public class TestDriver_CB_Random {
             if (iterationNumber==ZERO) {
                 //reincarnate leafs using CB
                 numRemainingPartitions = simulateOneMapIteration ( activeSubtreeCollectionListCB, 
-                                                   NodeSelectionStartegyEnum.STRICT_BEST_FIRST,    incumbentValue, 
+                                                   NodeSelectionStartegyEnum.STRICT_BEST_FIRST,    incumbentGlobal, 
                                                    true,   cbInstructionTreeList);
             }else {
                 numRemainingPartitions= simulateOneMapIteration ( activeSubtreeCollectionListCB, 
-                                                   NodeSelectionStartegyEnum.STRICT_BEST_FIRST,    incumbentValue, false, null);
+                                                   NodeSelectionStartegyEnum.STRICT_BEST_FIRST,    incumbentGlobal, false, null);
             }
                             
             //update driver's copy of incumbent
-            for (ActiveSubtreeCollection astc : activeSubtreeCollectionListCCA){
+            for (ActiveSubtreeCollection astc : activeSubtreeCollectionListCB){
                 if (IS_MAXIMIZATION) {
-                    incumbentValue= Math.max(incumbentValue,  astc.getIncumbentValue());
+                    incumbentGlobal= Math.max(incumbentGlobal,  astc.getIncumbentValue());
                 }else {
-                    incumbentValue= Math.min(incumbentValue,  astc.getIncumbentValue());
+                    incumbentGlobal= Math.min(incumbentGlobal,  astc.getIncumbentValue());
                 }
             }
 
             logger.debug ( "Number of reamining partitions is "+ numRemainingPartitions);                
+            logger.debug ("Global incumbent is "+incumbentGlobal);
 
             //do another iteration involving every partition, unless we are done
             if (ZERO==numRemainingPartitions)  break;
             
-        }//for greenFlagForIterations
+        }//end for  CB iterations
         
         //print results
         numNodeRelaxationsSolved = ZERO;
-        for (ActiveSubtreeCollection astc : activeSubtreeCollectionListCCA) {
+        for (ActiveSubtreeCollection astc : activeSubtreeCollectionListCB) {
             numNodeRelaxationsSolved += astc.getNumNodeRelaxationsSolved();
         } 
-        logger.debug(" CB test ended at iteration Number "+iterationNumber + " with incumbent "+incumbentValue+
+        logger.debug(" CB test ended at iteration Number "+iterationNumber + " with incumbent "+incumbentGlobal+
                  " and number of leafs solved " + numNodeRelaxationsSolved);
          
         
@@ -403,10 +363,11 @@ public class TestDriver_CB_Random {
     //simulate 1 map iteration on the cluster
     //there is one ActiveSubtreeCollection on each partition
     private static int simulateOneMapIteration (List<ActiveSubtreeCollection> activeSubtreeCollectionList, 
-            NodeSelectionStartegyEnum nodeSelectionStrategy, Double  incumbentValue,
+            NodeSelectionStartegyEnum nodeSelectionStrategy, final Double  incumbentGlobal,
             boolean reincarnationFlag, List<CBInstructionTree> cbInstructionTreeList) throws Exception{
 
         int numRemainingPartitions = activeSubtreeCollectionList.size(); // = NUM_PARTITIONS
+        
          
         //solve every partition for 3 minutes at a time
         for (int partitionNumber = ZERO;partitionNumber < NUM_PARTITIONS; partitionNumber++ ){                     
@@ -419,40 +380,21 @@ public class TestDriver_CB_Random {
             logger.debug("Solving partition for "+ SOLUTION_CYCLE_TIME_MINUTES+" minutes " + 
                          " having " +rawnodeCount + " rawnodes and " + treeCount + " trees " + " ... Partition_" + partitionNumber );
 
-            activeSubtreeCollectionList.get(partitionNumber).solve( true, SOLUTION_CYCLE_TIME_MINUTES  ,     
-                        true,    TIME_SLICE_IN_MINUTES_PER_ACTIVE_SUBTREE,  nodeSelectionStrategy ,
-                        reincarnationFlag,  reincarnationFlag? cbInstructionTreeList.get(partitionNumber ):null);               
+            //inform the partition of the latest global incumbent
+            activeSubtreeCollectionList.get(partitionNumber).setCutoff( incumbentGlobal);
+            activeSubtreeCollectionList.get(partitionNumber).solve(  SOLUTION_CYCLE_TIME_MINUTES  ,     
+                        TIME_SLICE_IN_MINUTES_PER_ACTIVE_SUBTREE,  nodeSelectionStrategy ,
+                         reincarnationFlag,  reincarnationFlag? cbInstructionTreeList.get(partitionNumber ):null);               
         }
 
-        //if better solution found on any partition, update incumbent, and supply MIP start to every partition
-        int partitionWithIncumbentUpdate = -ONE;
-        for (int partitionNumber = ZERO;partitionNumber < NUM_PARTITIONS; partitionNumber++ )/*]]*/{
-
-            ActiveSubtreeCollection astc = activeSubtreeCollectionList.get(partitionNumber);
-            Double challengerToIncumbent=astc.getIncumbentValue() ;
-
-            if (  (!IS_MAXIMIZATION  && incumbentValue> challengerToIncumbent)  || (IS_MAXIMIZATION && incumbentValue< challengerToIncumbent) ) {     
-                //bestKnownSolution =   solutionVector;
-                incumbentValue =  challengerToIncumbent;
-                partitionWithIncumbentUpdate= partitionNumber;
-            }
-        }
-
-        //update the MIP start if needed
-        if (partitionWithIncumbentUpdate>=ZERO){
-            for (int partitionNumber = ZERO;partitionNumber < NUM_PARTITIONS; partitionNumber++ ){                                      
-                if (partitionNumber==partitionWithIncumbentUpdate) continue;
-                activeSubtreeCollectionList.get(partitionNumber).setCutoff(incumbentValue );//   setMIPStart(bestKnownSolution );                   
-            }
-            logger.debug (" incumbent was updated to " + incumbentValue);
-        }
+       
 
         //if every partition is done, we can stop the iterations
                     
         //check all the  partitions
         for (int partitionNumber = ZERO;partitionNumber < NUM_PARTITIONS; partitionNumber++ ){   
             if (activeSubtreeCollectionList.get(partitionNumber).getPendingRawNodeCount() + activeSubtreeCollectionList.get(partitionNumber).getNumTrees() ==ZERO) {
-                logger.info("This partition is complete: " + partitionNumber);
+                //logger.info("This partition is complete: " + partitionNumber);
                 numRemainingPartitions --;
             }  
         }
@@ -466,26 +408,36 @@ public class TestDriver_CB_Random {
         List<CCANode> result = new ArrayList<CCANode> ();
         
         //first get the list of leafs in the ramped up tree
-        List<NodeAttachment> leafList = activeSubtreeForRampUp.getActiveLeafList();
+        List<NodeAttachment> nodeList = activeSubtreeForRampUp.getActiveLeafList();
+        List<String> node_ID_List  = new ArrayList<String>();
+        for (NodeAttachment node :nodeList ){
+            node_ID_List.add(node.nodeID);
+        }
+        
+        logger.debug ("printing all leafs in ramp up") ;
+        for (String id : node_ID_List) {
+            logger.debug (id ) ;
+        }
+        
                 
         //now get NUM_PARTITIONS sublists
         // this is done by shuffling the leafs and then creating equal sized sub-lists
         //note the psuedo random seed for reproducability of the tests
-        Collections.shuffle( leafList,  new Random((long) NUM_PARTITIONS));
+        Collections.shuffle( node_ID_List,  new Random((long) ONE));
          
         
-        int subListSize = leafList.size()/NUM_PARTITIONS ;
+        int subListSize = node_ID_List.size()/NUM_PARTITIONS ;
         
-        for  (int subListIndex = ZERO;leafList.size()>ZERO ; subListIndex++) {
+        for  (int subListIndex = ZERO;node_ID_List.size()>ZERO ; subListIndex++) {
             
             //remove subListSize leafs and add into this subList
             // in the last iteration, absorb the reaminder into th elast candidate
-            if (leafList.size()-subListSize< subListSize) subListSize+=(leafList.size()-subListSize);
+            if (node_ID_List.size()-subListSize< subListSize) subListSize+=(node_ID_List.size()-subListSize);
             
             List<String> subList = new ArrayList<String> ();
             int removeCount = subListSize;
-            while (removeCount>ZERO && leafList.size()>ZERO) {
-                subList.add(leafList.remove( -ONE + leafList.size()).nodeID);
+            while (removeCount>ZERO && node_ID_List.size()>ZERO) {
+                subList.add(node_ID_List.remove( -ONE + node_ID_List.size()));
                 removeCount --;
             }
                
@@ -493,8 +445,22 @@ public class TestDriver_CB_Random {
             result.add( activeSubtreeForRampUp.getCandidateCCANodes( subList).get(ZERO));
             //make a note of which leafs this CCA node represents
             listOfComponentLeafs.add(subList);
+            
+            logger.debug ("printing all leafs in CCA node " + result.get(-ONE+ result.size())) ;
+            for (String id : subList) {
+                logger.debug (id) ;
+            }
+            
         }
-                
+            
+        logger.debug (" Number of CCA nodes "+ result.size());
+        logger.debug (" Requested NUM_PARTITIONS "+ NUM_PARTITIONS );
+        logger.debug (" Number of items in component leaf list "+ listOfComponentLeafs.size());
+        logger.debug (" Sizes of each component leaf list " );
+        for ( List<String> strList :listOfComponentLeafs){
+            logger.debug (" Sizes   " +strList.size());
+        }
+                  
         return result;
     }
 }

@@ -48,7 +48,7 @@ public class ActiveSubtreeCollection {
     // the call is activeSubtree.mergeVarBounds(ccaNode,  instructionsFromOriginalMip, true);  
     private  List<BranchingInstruction> instructionsFromOriginalMIP ;
     
-    private double incumbentValue= IS_MAXIMIZATION ? MINUS_INFINITY : PLUS_INFINITY;
+    private double incumbentLocal= IS_MAXIMIZATION ? MINUS_INFINITY : PLUS_INFINITY;
     private SolutionVector incumbentSolution = null;
     
     //astc id
@@ -75,7 +75,7 @@ public class ActiveSubtreeCollection {
     public ActiveSubtreeCollection (List<CCANode> ccaNodeList, List<BranchingInstruction> instructionsFromOriginalMip, double cutoff, boolean useCutoff, int id) throws Exception {
         rawNodeList=ccaNodeList;
         this.instructionsFromOriginalMIP = instructionsFromOriginalMip;
-        if (useCutoff) this.incumbentValue= cutoff;
+        if (useCutoff) this.incumbentLocal= cutoff;
         //create 1 tree
         //this.promoteCCANodeIntoActiveSubtree( this.getRawNodeWithBestLPRelaxation(), false);
         
@@ -83,7 +83,7 @@ public class ActiveSubtreeCollection {
     }
     
     public void setCutoff (double cutoff) {
-        this.incumbentValue= cutoff;
+        this.incumbentLocal= cutoff;
     }
     
     public void setMIPStart(SolutionVector solutionVector) throws IloException {
@@ -100,7 +100,7 @@ public class ActiveSubtreeCollection {
         double result = -ONE;
         
         try {
-            double bestInteger=this.incumbentValue;
+            double bestInteger=this.incumbentLocal;
             double bestBound = this.getBestReaminingLPRElaxValue() ;
 
             double relativeMIPGap =  bestBound - bestInteger ;        
@@ -145,7 +145,7 @@ public class ActiveSubtreeCollection {
      
     //reincarnate flag is used to reincarnate the cca node into its component leafs using controlled branching
     //use this flag only when not using round-robin
-    public void solve (boolean useSimple, double timeLimitMinutes, boolean   useEmptyCallback, double timeSlicePerTreeInMInutes ,  
+    public void solve ( double timeLimitMinutes,   double timeSlicePerTreeInMInutes ,  
             NodeSelectionStartegyEnum nodeSelectionStartegy , boolean reincarnationFlag, CBInstructionTree cbInstructionTree) throws Exception {
         logger.info(" \n solving ActiveSubtree Collection ... " + PARTITION_ID); 
         Instant startTime = Instant.now();
@@ -180,50 +180,43 @@ public class ActiveSubtreeCollection {
             maxTreesCreatedDuringSolution = Math.max(maxTreesCreatedDuringSolution ,  activeSubTreeList.size());
             
             
-            //set best known solution, if any, as MIP start
-            if (incumbentValue != MINUS_INFINITY  && incumbentValue != PLUS_INFINITY){
+            //set best known LOCAL solution, if any, as MIP start
+            if (incumbentLocal != MINUS_INFINITY  && incumbentLocal != PLUS_INFINITY){
                 if (tree.isFeasible()){
-                    if (  (IS_MAXIMIZATION  && incumbentValue> tree.getObjectiveValue())  || (!IS_MAXIMIZATION && incumbentValue< tree.getObjectiveValue()) ) {                
+                    if (  (IS_MAXIMIZATION  && incumbentLocal> tree.getObjectiveValue())  || (!IS_MAXIMIZATION && incumbentLocal< tree.getObjectiveValue()) ) {                
                         //tree.setMIPStart(incumbentSolution);
-                        tree.setCutoffValue( incumbentValue);
+                        tree.setCutoffValue( incumbentLocal);
                     }
                 } else{
                     //tree.setMIPStart(incumbentSolution);
-                    tree.setCutoffValue( incumbentValue);
+                    tree.setCutoffValue( incumbentLocal);
                 }
             }
 
 
-            if (useSimple){
-                
-                double timeSlice = timeSlicePerTreeInMInutes; //default
-                
-                if (  timeLimitMinutes -timeUsedUpMInutes < timeSlicePerTreeInMInutes ) {
-                    timeSlice= timeLimitMinutes -timeUsedUpMInutes;
-                    if (timeSlice < MINIMUM_TIME_SLICE_IN_MINUTES_PER_ACTIVE_SUBTREE) timeSlice = MINIMUM_TIME_SLICE_IN_MINUTES_PER_ACTIVE_SUBTREE; //15 second least count
-                }
-                
-                if (timeSlice>ZERO) {                    
-                    if (reincarnationFlag) {
-                       logger.info("Reincarnating tree seeded by cca node "+ tree.seedCCANodeID + " with " + tree.guid  );  
-                       tree.reincarnate(cbInstructionTree.asMap(), tree.seedCCANodeID ,  PLUS_INFINITY , false );
-                    }else {
-                       logger.info("Solving tree seeded by cca node "+ tree.seedCCANodeID + " with " + tree.guid  + " for minutes " +  timeSlice);  
-                       tree.simpleSolve(timeSlice,  useEmptyCallback,  false, null); 
-                    }                   
-                }
-                                
-            } else {
-                //tree.solve( -ONE,  incumbentValue ,  timeSlicePerTree , false, isCollectionFeasibleOrOptimal());
+            //solve for remaining time
+            double timeSlice = timeSlicePerTreeInMInutes; //default
+            if (  timeLimitMinutes -timeUsedUpMInutes < timeSlicePerTreeInMInutes ) {
+                timeSlice= timeLimitMinutes -timeUsedUpMInutes;
+                if (timeSlice < MINIMUM_TIME_SLICE_IN_MINUTES_PER_ACTIVE_SUBTREE) timeSlice = MINIMUM_TIME_SLICE_IN_MINUTES_PER_ACTIVE_SUBTREE; //15 second least count
+            }
+            if (timeSlice>ZERO) {                    
+                if (reincarnationFlag) {
+                   logger.info("Reincarnating tree seeded by cca node "+ tree.seedCCANodeID + " with " + tree.guid  );  
+                   tree.reincarnate(cbInstructionTree.asMap(), tree.seedCCANodeID ,  PLUS_INFINITY , false );
+                }else {
+                   logger.info("Solving tree seeded by cca node "+ tree.seedCCANodeID + " with " + tree.guid  + " for minutes " +  timeSlice);  
+                   tree.simpleSolve(timeSlice,  true,   null); 
+                }                   
             }
             
-            //update incumbent if needed            
+            //update LOCAL incumbent if needed            
             if (tree.isFeasible()|| tree.isOptimal()){
                 double objVal =tree.getObjectiveValue();
-                if ((IS_MAXIMIZATION && incumbentValue< objVal)  || (!IS_MAXIMIZATION && incumbentValue> objVal) ){
-                    incumbentValue = objVal;
+                if ((IS_MAXIMIZATION && incumbentLocal< objVal)  || (!IS_MAXIMIZATION && incumbentLocal> objVal) ){
+                    incumbentLocal = objVal;
                     this.incumbentSolution=tree.getSolutionVector();
-                    logger.info("Incumbent updated to  "+ this.incumbentValue + " by tree " + tree.guid + " on this partition " + PARTITION_ID);
+                    logger.info("Incumbent updated to  "+ this.incumbentLocal + " by tree " + tree.guid + " on this partition " + PARTITION_ID);
                 }
             }
             
@@ -238,13 +231,16 @@ public class ActiveSubtreeCollection {
             logger.info("Number of trees left is "+ this.activeSubTreeList.size());  
             printStatus();
             
-        }
+            //if reincarnation complete, end solution cycle
+            if (reincarnationFlag) break;
+            
+        } //while solution cycle still has time
         
         logger.info(" ActiveSubtree Collection solved to completion "+PARTITION_ID );
     }
         
     public double getIncumbentValue (){
-        return new Double (this.incumbentValue);
+        return new Double (this.incumbentLocal);
     }
     
     
