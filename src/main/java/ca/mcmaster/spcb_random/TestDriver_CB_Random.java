@@ -236,6 +236,7 @@ public class TestDriver_CB_Random {
             
             //skip LSI and BEF
             if(NodeSelectionStartegyEnum.LOWEST_SUM_INFEASIBILITY_FIRST.equals(nodeSelectionStrategy ))  continue; 
+            if(NodeSelectionStartegyEnum.BEST_ESTIMATE_FIRST.equals(nodeSelectionStrategy ))  continue; 
             
             if(NodeSelectionStartegyEnum.STRICT_BEST_FIRST.equals(nodeSelectionStrategy )){
                 activeSubtreeCollectionList= activeSubtreeCollectionListSBF;                 
@@ -414,7 +415,7 @@ public class TestDriver_CB_Random {
             node_ID_List.add(node.nodeID);
         }
         
-        logger.debug ("printing all leafs in ramp up") ;
+        //logger.debug ("printing all leafs in ramp up") ;
         for (String id : node_ID_List) {
             logger.debug (id ) ;
         }
@@ -446,10 +447,10 @@ public class TestDriver_CB_Random {
             //make a note of which leafs this CCA node represents
             listOfComponentLeafs.add(subList);
             
-            logger.debug ("printing all leafs in CCA node " + result.get(-ONE+ result.size())) ;
-            for (String id : subList) {
-                logger.debug (id) ;
-            }
+            //logger.debug ("printing all leafs in CCA node " + result.get(-ONE+ result.size())) ;
+            //for (String id : subList) {
+                //logger.debug (id) ;
+            //}
             
         }
             
