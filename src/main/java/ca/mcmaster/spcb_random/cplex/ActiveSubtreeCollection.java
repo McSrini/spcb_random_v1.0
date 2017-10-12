@@ -206,7 +206,8 @@ public class ActiveSubtreeCollection {
                    tree.reincarnate(cbInstructionTree.asMap(), tree.seedCCANodeID ,  PLUS_INFINITY , false );
                 }else {
                    logger.info("Solving tree seeded by cca node "+ tree.seedCCANodeID + " with " + tree.guid  + " for minutes " +  timeSlice);  
-                   tree.simpleSolve(timeSlice,  true,   null); 
+                   //tree.simpleSolve(timeSlice,  true,   null); 
+                   tree.traditionalSolve(timeSlice);
                 }                   
             }
             

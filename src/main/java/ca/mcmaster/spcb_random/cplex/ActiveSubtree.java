@@ -223,21 +223,26 @@ public class ActiveSubtree {
         return allActiveLeafs ==null? ZERO: allActiveLeafs.size();
     }
     
-    //for testing
-    public void simpleSolve(double timeLimitMinutes, boolean useEmptyCallback,   List<String> pruneList) throws IloException{
-        logger.debug("simpleSolve Started at "+LocalDateTime.now()) ;
+    //solve using traditional bnb
+    //removing callbacks which were used to collect statistics, because with disk saving of nodes, these can cause crashes
+    public void traditionalSolve(double timeLimitMinutes) throws IloException{
+        
+        logger.debug("Traditional Solve Started at "+LocalDateTime.now()) ;
         cplex.clearCallbacks();
-        if (useEmptyCallback) {
+        
+        /*if (useEmptyCallback) {
             pruneBranchHandler =new PruneBranchHandler( pruneList);
             this.cplex.use(pruneBranchHandler);
             //this.cplex.use(new PruneNodeHandler( pruneList));
-        }  
+        }  */
         setTimeLimitMinutes (  timeLimitMinutes);
         
+        cplex.setParam(IloCplex.Param.MIP.Strategy.Search, ONE);
         cplex.setParam(IloCplex.Param.MIP.Strategy.File, TWO);    //low mem!
         cplex.solve();
         
         //get leafs  
+        /*
         LeafCountingNodeHandler lcnh = new LeafCountingNodeHandler(MIP_WELLKNOWN_SOLUTION);
         this.cplex.use(lcnh);  
         cplex.solve();
@@ -247,8 +252,11 @@ public class ActiveSubtree {
         numActiveLeafsWithGoodLPAfterSimpleSolve =lcnh.numLeafsWithGoodLP;
         this.bestOFTheBestEstimates = lcnh.bestOFTheBestEstimates;
         this.lowestSumOFIntegerInfeasibilities = lcnh.lowestSumOFIntegerInfeasibilities;
-                        
-        logger.debug("simpleSolve completed at "+LocalDateTime.now()) ;
+                      
+        */  
+        
+        logger.debug("Traditional Solve completed at "+LocalDateTime.now()) ;
+        
     }   
     
     //to do : add method to supply MIP starts , and use it while doing round robin and even otherwise
