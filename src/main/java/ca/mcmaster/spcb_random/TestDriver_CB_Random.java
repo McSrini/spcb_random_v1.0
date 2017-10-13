@@ -227,6 +227,55 @@ public class TestDriver_CB_Random {
         long numNodeRelaxationsSolved = ZERO;
         
          
+        
+        //Test 3 , use CB
+        ///reset global incumbent because we start right after ramp up
+        incumbentGlobal= incumbentValueAfterRampup;
+        for (iterationNumber=ZERO;   ;iterationNumber++){ 
+               
+            if(isHaltFilePresent())  break; //halt!
+            logger.debug("starting CB iteration Number "+iterationNumber);
+                 
+            int numRemainingPartitions = -ONE;
+            if (iterationNumber==ZERO) {
+                //reincarnate leafs using CB
+                numRemainingPartitions = simulateOneMapIteration ( activeSubtreeCollectionListCB, 
+                                                   NodeSelectionStartegyEnum.STRICT_BEST_FIRST,    incumbentGlobal, 
+                                                   true,   cbInstructionTreeList);
+            }else {
+                numRemainingPartitions= simulateOneMapIteration ( activeSubtreeCollectionListCB, 
+                                                   NodeSelectionStartegyEnum.STRICT_BEST_FIRST,    incumbentGlobal, false, null);
+            }
+                            
+            //update driver's copy of incumbent
+            for (ActiveSubtreeCollection astc : activeSubtreeCollectionListCB){
+                if (IS_MAXIMIZATION) {
+                    incumbentGlobal= Math.max(incumbentGlobal,  astc.getIncumbentValue());
+                }else {
+                    incumbentGlobal= Math.min(incumbentGlobal,  astc.getIncumbentValue());
+                }
+            }
+
+            logger.debug ( "Number of reamining partitions is "+ numRemainingPartitions);                
+            logger.debug ("Global incumbent is "+incumbentGlobal);
+
+            //do another iteration involving every partition, unless we are done
+            if (ZERO==numRemainingPartitions)  break;
+            
+        }//end for  CB iterations
+        
+        //print results
+        numNodeRelaxationsSolved = ZERO;
+        for (ActiveSubtreeCollection astc : activeSubtreeCollectionListCB) {
+            numNodeRelaxationsSolved += astc.getNumNodeRelaxationsSolved();
+        } 
+        logger.debug(" CB test ended at iteration Number "+iterationNumber + " with incumbent "+incumbentGlobal+
+                 " and number of leafs solved " + numNodeRelaxationsSolved);
+         
+        
+        
+        
+        
         //HERE is part 2 of the test, where we run individual leafs and compare results with CCA               
            
         List<ActiveSubtreeCollection> activeSubtreeCollectionList =null;
@@ -298,51 +347,6 @@ public class TestDriver_CB_Random {
              
         }//for all node sequencing strategies
         
-        
-        //Test 3 , use CB
-        ///reset global incumbent because we start right after ramp up
-        incumbentGlobal= incumbentValueAfterRampup;
-        for (iterationNumber=ZERO;   ;iterationNumber++){ 
-               
-            if(isHaltFilePresent())  break; //halt!
-            logger.debug("starting CB iteration Number "+iterationNumber);
-                 
-            int numRemainingPartitions = -ONE;
-            if (iterationNumber==ZERO) {
-                //reincarnate leafs using CB
-                numRemainingPartitions = simulateOneMapIteration ( activeSubtreeCollectionListCB, 
-                                                   NodeSelectionStartegyEnum.STRICT_BEST_FIRST,    incumbentGlobal, 
-                                                   true,   cbInstructionTreeList);
-            }else {
-                numRemainingPartitions= simulateOneMapIteration ( activeSubtreeCollectionListCB, 
-                                                   NodeSelectionStartegyEnum.STRICT_BEST_FIRST,    incumbentGlobal, false, null);
-            }
-                            
-            //update driver's copy of incumbent
-            for (ActiveSubtreeCollection astc : activeSubtreeCollectionListCB){
-                if (IS_MAXIMIZATION) {
-                    incumbentGlobal= Math.max(incumbentGlobal,  astc.getIncumbentValue());
-                }else {
-                    incumbentGlobal= Math.min(incumbentGlobal,  astc.getIncumbentValue());
-                }
-            }
-
-            logger.debug ( "Number of reamining partitions is "+ numRemainingPartitions);                
-            logger.debug ("Global incumbent is "+incumbentGlobal);
-
-            //do another iteration involving every partition, unless we are done
-            if (ZERO==numRemainingPartitions)  break;
-            
-        }//end for  CB iterations
-        
-        //print results
-        numNodeRelaxationsSolved = ZERO;
-        for (ActiveSubtreeCollection astc : activeSubtreeCollectionListCB) {
-            numNodeRelaxationsSolved += astc.getNumNodeRelaxationsSolved();
-        } 
-        logger.debug(" CB test ended at iteration Number "+iterationNumber + " with incumbent "+incumbentGlobal+
-                 " and number of leafs solved " + numNodeRelaxationsSolved);
-         
         
         
         
