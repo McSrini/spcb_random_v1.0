@@ -57,14 +57,21 @@ public class ConstantsAndParameters {
     public static  double CCA_PACKING_FACTOR_MAXIMUM_ALLOWED =  0.0;
     
    
-    public static   int TIME_SLICE_IN_MINUTES_PER_ACTIVE_SUBTREE = 4 ;    
+    public static   int TIME_SLICE_IN_MINUTES_PER_ACTIVE_SUBTREE = 2 ;    
     public static   double MINIMUM_TIME_SLICE_IN_MINUTES_PER_ACTIVE_SUBTREE = 0.5 ;//30 seconds
-    public static final int SOLUTION_CYCLE_TIME_MINUTES = 8;
+    public static final int SOLUTION_CYCLE_TIME_MINUTES = 4;
     
+    /*
     public static   String MIP_NAME_UNDER_TEST ="rmatr200-p10";
     public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 1800;   // or 5000    
     public static   double MIP_WELLKNOWN_SOLUTION =     2017;  
-    public static  int NUM_PARTITIONS =150;
+    public static  int NUM_PARTITIONS =600;
+    */
+    
+    public static   String MIP_NAME_UNDER_TEST ="a1c1s1";
+    public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 1000;   // or 5000    
+    public static   double MIP_WELLKNOWN_SOLUTION =  11503.444125    ;  
+    public static  int NUM_PARTITIONS =100;
     
     public static double EXPECTED_LEAFS_PER_PARTITION = (RAMP_UP_TO_THIS_MANY_LEAFS +DOUBLE_ZERO)/NUM_PARTITIONS;
     

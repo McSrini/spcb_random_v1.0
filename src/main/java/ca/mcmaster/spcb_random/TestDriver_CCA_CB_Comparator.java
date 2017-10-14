@@ -171,13 +171,13 @@ public class TestDriver_CCA_CB_Comparator {
                 //These CCA nodes are of course fake CCA nodes
                 List<CCANode> ccaLeafNodeListSBF = activeSubtreeForRampUp.getActiveLeafsAsCCANodes( ccaNode.pruneList);                                      
                 //now create an active subtree collection , which represents the work on one partition by doing a round-robin thru these leafs
-                ActiveSubtreeCollection astc = new ActiveSubtreeCollection (ccaLeafNodeListSBF, activeSubtreeForRampUp.instructionsFromOriginalMip, incumbentValueAfterRampup, bestKnownSolutionAfterRampup!=null, index) ;
+                ActiveSubtreeCollection astc = new ActiveSubtreeCollection (ccaLeafNodeListSBF, null,activeSubtreeForRampUp.instructionsFromOriginalMip, incumbentValueAfterRampup, bestKnownSolutionAfterRampup!=null, index) ;
                 activeSubtreeCollectionListSBF.add(astc);
                 
                 //we also create another collection list, with only the accepted CCA nodes, one on each partition
                 List<CCANode> ccaSingletonLeafNodeList = new ArrayList<CCANode> ();
                 ccaSingletonLeafNodeList.add(ccaNode);
-                astc = new ActiveSubtreeCollection ( ccaSingletonLeafNodeList, activeSubtreeForRampUp.instructionsFromOriginalMip, incumbentValueAfterRampup, bestKnownSolutionAfterRampup!=null, index) ;
+                astc = new ActiveSubtreeCollection ( ccaSingletonLeafNodeList, null, activeSubtreeForRampUp.instructionsFromOriginalMip, incumbentValueAfterRampup, bestKnownSolutionAfterRampup!=null, index) ;
                 activeSubtreeCollectionListCCA.add(astc);
                 
                 //create a list of CB instuction trees, and an active subtree collection with all the corresponding CCA  nodes
@@ -185,7 +185,7 @@ public class TestDriver_CCA_CB_Comparator {
                 cbInstructionTreeList.add( tree); 
                 List<CCANode> ccaSingletonLeafNodeListForCB = new ArrayList<CCANode> ();
                 ccaSingletonLeafNodeListForCB.add(ccaNode);
-                astc = new ActiveSubtreeCollection ( ccaSingletonLeafNodeListForCB, activeSubtreeForRampUp.instructionsFromOriginalMip, incumbentValueAfterRampup, bestKnownSolutionAfterRampup!=null, index) ;
+                astc = new ActiveSubtreeCollection ( ccaSingletonLeafNodeListForCB, tree, activeSubtreeForRampUp.instructionsFromOriginalMip, incumbentValueAfterRampup, bestKnownSolutionAfterRampup!=null, index) ;
                 activeSubtreeCollectionListCB.add(astc);
                 
             }               
@@ -196,21 +196,21 @@ public class TestDriver_CCA_CB_Comparator {
             List<CCANode> appendageSBF = new ArrayList<CCANode> ();
             appendageSBF.add(ccaNode);
             activeSubtreeCollectionListSBF.add (
-                    new ActiveSubtreeCollection (  appendageSBF, activeSubtreeForRampUp.instructionsFromOriginalMip, 
+                    new ActiveSubtreeCollection (  appendageSBF,null, activeSubtreeForRampUp.instructionsFromOriginalMip, 
                             incumbentValueAfterRampup, bestKnownSolutionAfterRampup!=null, index)
             );
             
             List<CCANode> appendageCCA= new ArrayList<CCANode> ();
             appendageCCA.add(ccaNode);
             activeSubtreeCollectionListCCA.add(
-                    new ActiveSubtreeCollection ( appendageCCA , activeSubtreeForRampUp.instructionsFromOriginalMip, 
+                    new ActiveSubtreeCollection ( appendageCCA , null,activeSubtreeForRampUp.instructionsFromOriginalMip, 
                             incumbentValueAfterRampup, bestKnownSolutionAfterRampup!=null, index++)
             );
             
             List<CCANode> appendageCB= new ArrayList<CCANode> ();
             appendageCB.add(ccaNode);
             activeSubtreeCollectionListCB.add(
-                    new ActiveSubtreeCollection ( appendageCB , activeSubtreeForRampUp.instructionsFromOriginalMip, 
+                    new ActiveSubtreeCollection ( appendageCB , null,activeSubtreeForRampUp.instructionsFromOriginalMip, 
                             incumbentValueAfterRampup, bestKnownSolutionAfterRampup!=null, index++)
             );
         }
@@ -268,7 +268,7 @@ public class TestDriver_CCA_CB_Comparator {
                  
             int numRemainingPartitions = simulateOneMapIteration ( activeSubtreeCollectionListCCA, 
                                                    NodeSelectionStartegyEnum.STRICT_BEST_FIRST,    incumbentGlobal,
-                                                   false, null);
+                                                   false );
                 
             //update driver's copy of incumbent
             for (ActiveSubtreeCollection astc : activeSubtreeCollectionListCCA){
@@ -326,7 +326,7 @@ public class TestDriver_CCA_CB_Comparator {
 
                 int numRemainingPartitions = simulateOneMapIteration ( activeSubtreeCollectionList, 
                                                    nodeSelectionStrategy,    incumbentGlobal,
-                                                   false, null);
+                                                   false );
                 
                 //update driver's copy of incumbent
                 for (ActiveSubtreeCollection astc : activeSubtreeCollectionList){
@@ -381,10 +381,10 @@ public class TestDriver_CCA_CB_Comparator {
                                                    NodeSelectionStartegyEnum.STRICT_BEST_FIRST,    incumbentGlobal, 
                                                    /*reincarnate all partitions except the trailing appendix which only has single leafs*/
                                                    true
-                                                   ,   cbInstructionTreeList);
+                                                   );
             }else {
                 numRemainingPartitions= simulateOneMapIteration ( activeSubtreeCollectionListCB, 
-                                                   NodeSelectionStartegyEnum.STRICT_BEST_FIRST,    incumbentGlobal, false, null);
+                                                   NodeSelectionStartegyEnum.STRICT_BEST_FIRST,    incumbentGlobal, false);
             }
                             
             //update driver's copy of incumbent
@@ -434,7 +434,7 @@ public class TestDriver_CCA_CB_Comparator {
     //there is one ActiveSubtreeCollection on each partition
     private static int simulateOneMapIteration (List<ActiveSubtreeCollection> activeSubtreeCollectionList, 
             NodeSelectionStartegyEnum nodeSelectionStrategy, final Double  incumbentGlobal,
-            boolean reincarnationFlag, List<CBInstructionTree> cbInstructionTreeList) throws Exception{
+            boolean reincarnationFlag ) throws Exception{
 
         int numRemainingPartitions = activeSubtreeCollectionList.size(); // = NUM_PARTITIONS
         
@@ -457,7 +457,7 @@ public class TestDriver_CCA_CB_Comparator {
             boolean reincarnate = reincarnationFlag && partitionNumber < NUM_PARTITIONS_WITH_BRANCHING_INSTRUCTIONS_FOR_CB ;
             activeSubtreeCollectionList.get(partitionNumber).solve(  SOLUTION_CYCLE_TIME_MINUTES  ,     
                         TIME_SLICE_IN_MINUTES_PER_ACTIVE_SUBTREE,  nodeSelectionStrategy ,
-                        reincarnate ,  reincarnate ? cbInstructionTreeList.get(partitionNumber ):null);               
+                        reincarnate );               
         }
 
        

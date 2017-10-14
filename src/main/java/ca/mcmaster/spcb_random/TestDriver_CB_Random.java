@@ -144,7 +144,7 @@ public class TestDriver_CB_Random {
         
         // now lets populate the ActiveSubtreeCollections
         //
-        long acceptedCandidateWithLowestNumOfLeafs = PLUS_INFINITY;
+        
         for (int index = ZERO; index < candidateCCANodes.size(); index ++){
 
             CCANode ccaNode= candidateCCANodes.get(index);
@@ -155,21 +155,19 @@ public class TestDriver_CB_Random {
                         " and prune list size " + ccaNode.pruneList.size() + " depth from root "+ ccaNode.depthOfCCANodeBelowRoot) ; 
                  
                 //          qxxy               dod     
-                               
-                acceptedCandidateWithLowestNumOfLeafs = Math.min(acceptedCandidateWithLowestNumOfLeafs,ccaNode.pruneList.size()  );
-                
+                 
                 //All leafs need to be converted into CCA node representations, since solvers deal with CCA nodes and not leafs
                 //These CCA nodes are of course fake CCA nodes
                 List<CCANode> ccaLeafNodeListSBF = activeSubtreeForRampUp.getActiveLeafsAsCCANodes(  listOfComponentLeafsForCandidateCCANodes.get(index));                                      
                 //now create an active subtree collection , which represents the work on one partition by doing a round-robin thru these leafs
-                ActiveSubtreeCollection astc = new ActiveSubtreeCollection (ccaLeafNodeListSBF, activeSubtreeForRampUp.instructionsFromOriginalMip, 
+                ActiveSubtreeCollection astc = new ActiveSubtreeCollection (ccaLeafNodeListSBF, null, activeSubtreeForRampUp.instructionsFromOriginalMip, 
                         incumbentValueAfterRampup, bestKnownSolutionAfterRampup!=null, index) ;
                 activeSubtreeCollectionListSBF.add(astc);
                 
                 //repeat for BEF  
                 List<CCANode> ccaLeafNodeListBEF = new ArrayList<CCANode> () ;
                 ccaLeafNodeListBEF.addAll(ccaLeafNodeListSBF) ;
-                astc = new ActiveSubtreeCollection (ccaLeafNodeListBEF, activeSubtreeForRampUp.instructionsFromOriginalMip, 
+                astc = new ActiveSubtreeCollection (ccaLeafNodeListBEF, null, activeSubtreeForRampUp.instructionsFromOriginalMip, 
                         incumbentValueAfterRampup, bestKnownSolutionAfterRampup!=null, index) ;
                 activeSubtreeCollectionListBEF .add(astc);
                                 
@@ -178,7 +176,7 @@ public class TestDriver_CB_Random {
                 ccaSingletonLeafNodeList.add(ccaNode);
                 CBInstructionTree tree = activeSubtreeForRampUp.getCBInstructionTree(ccaNode, listOfComponentLeafsForCandidateCCANodes.get(index));
                 cbInstructionTreeList.add( tree); 
-                astc = new ActiveSubtreeCollection ( ccaSingletonLeafNodeList, activeSubtreeForRampUp.instructionsFromOriginalMip, incumbentValueAfterRampup, bestKnownSolutionAfterRampup!=null, index) ;
+                astc = new ActiveSubtreeCollection ( ccaSingletonLeafNodeList, tree, activeSubtreeForRampUp.instructionsFromOriginalMip, incumbentValueAfterRampup, bestKnownSolutionAfterRampup!=null, index) ;
                 activeSubtreeCollectionListCB.add(astc);
                 
             }               
@@ -187,8 +185,7 @@ public class TestDriver_CB_Random {
         
         //at this point, we have farmed out CCA nodes, and also
         //have the corresponding subtree collections for comparision [ each subtree collection has all the leafs of the corresponding CCA]                 
-        logger.debug ("number of CCA nodes collected = "+candidateCCANodes.size() + 
-                " . The lowest number of leafs represented by a CCA node is "+ acceptedCandidateWithLowestNumOfLeafs) ;            
+        logger.debug ("number of CCA nodes collected = "+candidateCCANodes.size()  ) ;            
         for ( int index = ZERO; index <  candidateCCANodes.size(); index++){
             logger.debug("CCA node is : " + candidateCCANodes.get(index) + 
                     " and its prune list size is " + candidateCCANodes.get(index).pruneList.size()) ;
@@ -241,10 +238,10 @@ public class TestDriver_CB_Random {
                 //reincarnate leafs using CB
                 numRemainingPartitions = simulateOneMapIteration ( activeSubtreeCollectionListCB, 
                                                    NodeSelectionStartegyEnum.STRICT_BEST_FIRST,    incumbentGlobal, 
-                                                   true,   cbInstructionTreeList);
+                                                   true);
             }else {
                 numRemainingPartitions= simulateOneMapIteration ( activeSubtreeCollectionListCB, 
-                                                   NodeSelectionStartegyEnum.STRICT_BEST_FIRST,    incumbentGlobal, false, null);
+                                                   NodeSelectionStartegyEnum.STRICT_BEST_FIRST,    incumbentGlobal, false);
             }
                             
             //update driver's copy of incumbent
@@ -307,7 +304,7 @@ public class TestDriver_CB_Random {
 
                 int numRemainingPartitions = simulateOneMapIteration ( activeSubtreeCollectionList, 
                                                    nodeSelectionStrategy,    incumbentGlobal,
-                                                   false, null);
+                                                   false);
                 
                 //update driver's copy of incumbent
                 for (ActiveSubtreeCollection astc : activeSubtreeCollectionList){
@@ -369,7 +366,7 @@ public class TestDriver_CB_Random {
     //there is one ActiveSubtreeCollection on each partition
     private static int simulateOneMapIteration (List<ActiveSubtreeCollection> activeSubtreeCollectionList, 
             NodeSelectionStartegyEnum nodeSelectionStrategy, final Double  incumbentGlobal,
-            boolean reincarnationFlag, List<CBInstructionTree> cbInstructionTreeList) throws Exception{
+            boolean reincarnationFlag ) throws Exception{
 
         int numRemainingPartitions = activeSubtreeCollectionList.size(); // = NUM_PARTITIONS
         
@@ -389,7 +386,7 @@ public class TestDriver_CB_Random {
             activeSubtreeCollectionList.get(partitionNumber).setCutoff( incumbentGlobal);
             activeSubtreeCollectionList.get(partitionNumber).solve(  SOLUTION_CYCLE_TIME_MINUTES  ,     
                         TIME_SLICE_IN_MINUTES_PER_ACTIVE_SUBTREE,  nodeSelectionStrategy ,
-                         reincarnationFlag,  reincarnationFlag? cbInstructionTreeList.get(partitionNumber ):null);               
+                         reincarnationFlag);               
         }
 
        

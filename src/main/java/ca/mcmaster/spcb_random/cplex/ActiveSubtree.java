@@ -238,7 +238,7 @@ public class ActiveSubtree {
         setTimeLimitMinutes (  timeLimitMinutes);
         
         cplex.setParam(IloCplex.Param.MIP.Strategy.Search, ONE);
-        cplex.setParam(IloCplex.Param.MIP.Strategy.File, TWO);    //low mem!
+        //cplex.setParam(IloCplex.Param.MIP.Strategy.File, TWO);    //low mem!
         cplex.solve();
         
         //get leafs  

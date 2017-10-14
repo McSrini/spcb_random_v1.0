@@ -17,6 +17,7 @@ import ca.mcmaster.spcb_random.cca.CCANode;
 import static ca.mcmaster.spcb_random.cplex.NodeSelectionStartegyEnum.BEST_ESTIMATE_FIRST;
 import static ca.mcmaster.spcb_random.cplex.NodeSelectionStartegyEnum.STRICT_BEST_FIRST;
 import ca.mcmaster.spcb_random.cplex.datatypes.BranchingInstruction;
+import ca.mcmaster.spcb_random.cplex.datatypes.ResultOfPartitionSolve;
 import ca.mcmaster.spcb_random.cplex.datatypes.SolutionVector;
 import ilog.concert.IloException;
 import ilog.cplex.IloCplex.Status;
@@ -43,6 +44,11 @@ public class ActiveSubtreeCollection {
         
     private List<ActiveSubtree> activeSubTreeList = new ArrayList<ActiveSubtree>();
     private List<CCANode> rawNodeList = new ArrayList<CCANode>();
+    //in case we have only CCA node to solve, we will also be getting CB instructions for it
+    private CBInstructionTree cbInstruction = null;
+    
+    
+    
     //record the branching instructions required to arrive at the subtree root node under which these CCA nodes lie
     //To promote a CCA node into an IloCplex, we need to apply these branching conditions and then the CCA branching conditions
     // the call is activeSubtree.mergeVarBounds(ccaNode,  instructionsFromOriginalMip, true);  
@@ -72,8 +78,10 @@ public class ActiveSubtreeCollection {
           
     }
     
-    public ActiveSubtreeCollection (List<CCANode> ccaNodeList, List<BranchingInstruction> instructionsFromOriginalMip, double cutoff, boolean useCutoff, int id) throws Exception {
+    public ActiveSubtreeCollection (List<CCANode> ccaNodeList, CBInstructionTree cbInstruction , List<BranchingInstruction> instructionsFromOriginalMip, double cutoff, boolean useCutoff, int id) throws Exception {
         rawNodeList=ccaNodeList;
+        this.cbInstruction= cbInstruction;
+        
         this.instructionsFromOriginalMIP = instructionsFromOriginalMip;
         if (useCutoff) this.incumbentLocal= cutoff;
         //create 1 tree
@@ -145,8 +153,8 @@ public class ActiveSubtreeCollection {
      
     //reincarnate flag is used to reincarnate the cca node into its component leafs using controlled branching
     //use this flag only when not using round-robin
-    public void solve ( double timeLimitMinutes,   double timeSlicePerTreeInMInutes ,  
-            NodeSelectionStartegyEnum nodeSelectionStartegy , boolean reincarnationFlag, CBInstructionTree cbInstructionTree) throws Exception {
+    public ResultOfPartitionSolve solve ( double timeLimitMinutes,   double timeSlicePerTreeInMInutes ,  
+            NodeSelectionStartegyEnum nodeSelectionStartegy , boolean reincarnationFlag ) throws Exception {
         logger.info(" \n solving ActiveSubtree Collection ... " + PARTITION_ID); 
         Instant startTime = Instant.now();
         
@@ -203,7 +211,7 @@ public class ActiveSubtreeCollection {
             if (timeSlice>ZERO) {                    
                 if (reincarnationFlag) {
                    logger.info("Reincarnating tree seeded by cca node "+ tree.seedCCANodeID + " with " + tree.guid  );  
-                   tree.reincarnate(cbInstructionTree.asMap(), tree.seedCCANodeID ,  PLUS_INFINITY , false );
+                   tree.reincarnate(this.cbInstruction.asMap(), tree.seedCCANodeID ,  PLUS_INFINITY , false );
                 }else {
                    logger.info("Solving tree seeded by cca node "+ tree.seedCCANodeID + " with " + tree.guid  + " for minutes " +  timeSlice);  
                    //tree.simpleSolve(timeSlice,  true,   null); 
@@ -237,7 +245,14 @@ public class ActiveSubtreeCollection {
             
         } //while solution cycle still has time
         
-        logger.info(" ActiveSubtree Collection solved to completion "+PARTITION_ID );
+        int countReamining = this.rawNodeList.size() + this.activeSubTreeList.size();
+        if (ZERO==countReamining){
+            logger.info(" ActiveSubtree Collection solved to completion  "+PARTITION_ID );
+        } else{
+            logger.info(" ActiveSubtree Collection solved for solution cycle time  "+PARTITION_ID );
+        }
+        
+        return new ResultOfPartitionSolve (ZERO==countReamining , incumbentLocal) ;
     }
         
     public double getIncumbentValue (){

@@ -8,6 +8,7 @@ package ca.mcmaster.spcb_random.cca;
 import ca.mcmaster.spcb_random.cplex.datatypes.BranchingInstruction;
 import static ca.mcmaster.spcb_random.ConstantsAndParameters.*;
 import ca.mcmaster.spcb_random.cplex.ActiveSubtree;
+import ca.mcmaster.spcb_random.cplex.datatypes.TreeNode;
 import java.io.Serializable;
 import static java.lang.System.exit;
 import java.util.*;
@@ -21,7 +22,7 @@ import org.apache.log4j.RollingFileAppender;
  * @author tamvadss
  * 
  */
-public class CCANode  implements Serializable {
+public class CCANode  extends TreeNode implements Serializable {
     
     private static Logger logger=Logger.getLogger(CCANode.class);
     
