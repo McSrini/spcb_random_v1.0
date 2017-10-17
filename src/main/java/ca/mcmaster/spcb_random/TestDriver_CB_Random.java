@@ -137,6 +137,7 @@ public class TestDriver_CB_Random {
         //for every accepted CCA node, we create an active subtree collection that has all its leafs
         List<ActiveSubtreeCollection> activeSubtreeCollectionListSBF = new ArrayList<ActiveSubtreeCollection>();
         List<ActiveSubtreeCollection> activeSubtreeCollectionListBEF = new ArrayList<ActiveSubtreeCollection>();
+        List<ActiveSubtreeCollection> activeSubtreeCollectionListLSI = new ArrayList<ActiveSubtreeCollection>();
         
         //and here are the CB instruction trees for each CCA node, and a subtree collection for CB
         List< CBInstructionTree>  cbInstructionTreeList  =new ArrayList<CBInstructionTree > () ;   
@@ -170,6 +171,13 @@ public class TestDriver_CB_Random {
                 astc = new ActiveSubtreeCollection (ccaLeafNodeListBEF, null, activeSubtreeForRampUp.instructionsFromOriginalMip, 
                         incumbentValueAfterRampup, bestKnownSolutionAfterRampup!=null, index) ;
                 activeSubtreeCollectionListBEF .add(astc);
+                
+                //repeat for LSI  
+                List<CCANode> ccaLeafNodeListLSI = new ArrayList<CCANode> () ;
+                ccaLeafNodeListLSI.addAll(ccaLeafNodeListSBF) ;
+                astc = new ActiveSubtreeCollection (ccaLeafNodeListLSI, null, activeSubtreeForRampUp.instructionsFromOriginalMip, 
+                        incumbentValueAfterRampup, bestKnownSolutionAfterRampup!=null, index) ;
+                activeSubtreeCollectionListLSI .add(astc);
                                 
                 //create a list of CB instuction trees, and an active subtree collection with all the corresponding CCA  nodes
                 List<CCANode> ccaSingletonLeafNodeList = new ArrayList<CCANode> ();
@@ -280,13 +288,17 @@ public class TestDriver_CB_Random {
         //repeat test for all node selection strategies
         for(NodeSelectionStartegyEnum nodeSelectionStrategy  :NodeSelectionStartegyEnum.values()){
             
-            //skip LSI and BEF
-            if(NodeSelectionStartegyEnum.LOWEST_SUM_INFEASIBILITY_FIRST.equals(nodeSelectionStrategy ))  continue; 
-            if(NodeSelectionStartegyEnum.BEST_ESTIMATE_FIRST.equals(nodeSelectionStrategy ))  continue; 
-            
+            if (!COLLECT_ALL_METRICS){
+                //skip LSI BEF
+                if(NodeSelectionStartegyEnum.LOWEST_SUM_INFEASIBILITY_FIRST.equals(nodeSelectionStrategy ))  continue; 
+                if(NodeSelectionStartegyEnum.BEST_ESTIMATE_FIRST.equals(nodeSelectionStrategy ))  continue; 
+            }
+                        
             if(NodeSelectionStartegyEnum.STRICT_BEST_FIRST.equals(nodeSelectionStrategy )){
                 activeSubtreeCollectionList= activeSubtreeCollectionListSBF;                 
-            } else {
+            } else  if(NodeSelectionStartegyEnum.LOWEST_SUM_INFEASIBILITY_FIRST.equals(nodeSelectionStrategy )){
+                activeSubtreeCollectionList= activeSubtreeCollectionListLSI;  
+            } else            {
                 activeSubtreeCollectionList= activeSubtreeCollectionListBEF;  
             }
             

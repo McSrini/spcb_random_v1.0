@@ -225,35 +225,44 @@ public class ActiveSubtree {
     
     //solve using traditional bnb
     //removing callbacks which were used to collect statistics, because with disk saving of nodes, these can cause crashes
-    public void traditionalSolve(double timeLimitMinutes) throws IloException{
+    public void traditionalSolve(double timeLimitMinutes, boolean collect_LSI_BEF_Metrics, boolean countNumLeafsSolved, int saveToDisk) throws IloException{
         
         logger.debug("Traditional Solve Started at "+LocalDateTime.now()) ;
         cplex.clearCallbacks();
         
-        /*if (useEmptyCallback) {
-            pruneBranchHandler =new PruneBranchHandler( pruneList);
+        if (countNumLeafsSolved){
+            pruneBranchHandler =new PruneBranchHandler( new ArrayList<String>());
             this.cplex.use(pruneBranchHandler);
             //this.cplex.use(new PruneNodeHandler( pruneList));
-        }  */
+        }
+        
         setTimeLimitMinutes (  timeLimitMinutes);
         
         cplex.setParam(IloCplex.Param.MIP.Strategy.Search, ONE);
-        //cplex.setParam(IloCplex.Param.MIP.Strategy.File, TWO);    //low mem!
+        
+        if (saveToDisk>= ZERO) {
+            cplex.setParam(IloCplex.Param.MIP.Strategy.File, saveToDisk);
+            cplex.setParam(IloCplex.Param.WorkMem,  WORK_MEM);    //low mem!
+        }     
+        
         cplex.solve();
         
-        //get leafs  
-        /*
-        LeafCountingNodeHandler lcnh = new LeafCountingNodeHandler(MIP_WELLKNOWN_SOLUTION);
-        this.cplex.use(lcnh);  
-        cplex.solve();
-        //this.allActiveLeafs= lcnh.allLeafs;
-        
-        numActiveLeafsAfterSimpleSolve =lcnh.numLeafs;
-        numActiveLeafsWithGoodLPAfterSimpleSolve =lcnh.numLeafsWithGoodLP;
-        this.bestOFTheBestEstimates = lcnh.bestOFTheBestEstimates;
-        this.lowestSumOFIntegerInfeasibilities = lcnh.lowestSumOFIntegerInfeasibilities;
-                      
-        */  
+        if (collect_LSI_BEF_Metrics) {
+                  
+            //get leafs 
+                  
+            LeafCountingNodeHandler lcnh = new LeafCountingNodeHandler(MIP_WELLKNOWN_SOLUTION);
+            this.cplex.use(lcnh);  
+            cplex.solve();
+
+            //this.allActiveLeafs= lcnh.allLeafs;
+
+            numActiveLeafsAfterSimpleSolve =lcnh.numLeafs;
+            numActiveLeafsWithGoodLPAfterSimpleSolve =lcnh.numLeafsWithGoodLP;
+            this.bestOFTheBestEstimates = lcnh.bestOFTheBestEstimates;
+            this.lowestSumOFIntegerInfeasibilities = lcnh.lowestSumOFIntegerInfeasibilities;
+
+        }
         
         logger.debug("Traditional Solve completed at "+LocalDateTime.now()) ;
         

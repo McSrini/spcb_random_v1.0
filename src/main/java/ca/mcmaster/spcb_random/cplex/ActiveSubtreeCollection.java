@@ -215,7 +215,7 @@ public class ActiveSubtreeCollection {
                 }else {
                    logger.info("Solving tree seeded by cca node "+ tree.seedCCANodeID + " with " + tree.guid  + " for minutes " +  timeSlice);  
                    //tree.simpleSolve(timeSlice,  true,   null); 
-                   tree.traditionalSolve(timeSlice);
+                   tree.traditionalSolve(timeSlice, COLLECT_ALL_METRICS,   COLLECT_NUM_NODES_SOLVED, SAVE_NODE_FILE_TO_DISK);
                 }                   
             }
             
