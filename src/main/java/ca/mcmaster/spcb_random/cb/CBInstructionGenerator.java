@@ -60,7 +60,7 @@ public class CBInstructionGenerator {
             
         }
         this.ccaRootNodeAttachment=getCCARootNodeAttachment();
-        
+                
         buildSkipcounts();
         this.printState(ccaRootNodeAttachment);
     }
@@ -84,7 +84,7 @@ public class CBInstructionGenerator {
                 //AND
                 //create CCA node on left side [if its not a leaf]
                                 
-                NodeAttachment currentNode =node; 
+                NodeAttachment currentNode =node;               
                 for (int index = ZERO ; index <= tree.ccaRoot.skipCountLeft; index ++){
                     
                     //the first skip is to the left

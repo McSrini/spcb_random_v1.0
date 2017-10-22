@@ -87,6 +87,13 @@ public class CCAFinder {
         
     }//end init 
     
+    public void   reInitialize   (    ) {
+        
+        close();
+        initialize(allLeafs);         
+        
+    }
+    
     public void close () {
         //reset CCA information in every node
         if (this.allLeafs!=null){
@@ -114,7 +121,12 @@ public class CCAFinder {
     }
     
     //these getCandidateCCANodes() methods can be invoked multiple times, each time with a differnt argument
-    public List<CCANode> getCandidateCCANodes (List<String> wantedLeafNodeIDs) {
+    //
+    // reInitializeRefs also forces all the ccaInformation to be cleared
+    //
+    public List<CCANode> getCandidateCCANodes (List<String> wantedLeafNodeIDs, boolean reInitializeFlag) {
+        
+        if (reInitializeFlag)  reInitialize ();
         buildRefCounts(  wantedLeafNodeIDs);
         //printState(root);
         
@@ -125,7 +137,9 @@ public class CCAFinder {
         return this.candidateCCANodes;
     }
     
-    public List<CCANode> getCandidateCCANodes (int count)   {
+    public List<CCANode> getCandidateCCANodes (int count, boolean reInitializeFlag)   {
+        
+        if (reInitializeFlag)  reInitialize ();
         buildRefCounts();
         //printState(root);
                 

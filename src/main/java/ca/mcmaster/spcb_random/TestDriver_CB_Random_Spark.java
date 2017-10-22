@@ -332,7 +332,7 @@ public class TestDriver_CB_Random_Spark {
             }
                
             //get the CCA node for this sublist of leafs
-            result.add( activeSubtreeForRampUp.getCandidateCCANodes( subList).get(ZERO));
+            result.add( activeSubtreeForRampUp.getCandidateCCANodes( subList, true).get(ZERO));
             //make a note of which leafs this CCA node represents
             listOfComponentLeafs.add(subList);
             

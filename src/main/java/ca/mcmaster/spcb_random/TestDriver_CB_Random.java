@@ -124,7 +124,22 @@ public class TestDriver_CB_Random {
         
         //get random CCA condidates, and the leafs they represent
         List<List<String>> listOfComponentLeafsForCandidateCCANodes = new ArrayList<List<String>>();
-        List<CCANode> candidateCCANodes =  getRandomCCACandidates (activeSubtreeForRampUp, NUM_PARTITIONS,   listOfComponentLeafsForCandidateCCANodes) ;
+        //  here are the CB instruction trees for each CCA node
+        List< CBInstructionTree>  cbInstructionTreeList  =new ArrayList<CBInstructionTree > () ;   
+        
+        List<CCANode> candidateCCANodes =  getRandomCCACandidates (activeSubtreeForRampUp, NUM_PARTITIONS,   listOfComponentLeafsForCandidateCCANodes,
+                                                                   cbInstructionTreeList) ;
+        
+        logger.debug("Print generated CCA nodes and their component leafs");
+        for (int index = ZERO; index < candidateCCANodes.size(); index ++) {
+            logger.debug ("CCA node is " + candidateCCANodes.get(index).nodeID) ;
+            String leafList = "";
+            for (int leafIndex = ZERO; leafIndex < listOfComponentLeafsForCandidateCCANodes.get(index).size(); leafIndex++) {
+                leafList+=listOfComponentLeafsForCandidateCCANodes.get(index).get(leafIndex)+", ";
+            }
+            logger.debug ("Component leaf list is " +  leafList) ;
+        }
+        
         
         if (candidateCCANodes.size() < NUM_PARTITIONS) {
             logger.error("this splitToCCAPostRampup partitioning cannot be done  , try ramping up to  a larger number of leafs ");
@@ -138,10 +153,9 @@ public class TestDriver_CB_Random {
         List<ActiveSubtreeCollection> activeSubtreeCollectionListSBF = new ArrayList<ActiveSubtreeCollection>();
         List<ActiveSubtreeCollection> activeSubtreeCollectionListBEF = new ArrayList<ActiveSubtreeCollection>();
         List<ActiveSubtreeCollection> activeSubtreeCollectionListLSI = new ArrayList<ActiveSubtreeCollection>();
-        
-        //and here are the CB instruction trees for each CCA node, and a subtree collection for CB
-        List< CBInstructionTree>  cbInstructionTreeList  =new ArrayList<CBInstructionTree > () ;   
+        //similarly we have a list of cb 
         List<ActiveSubtreeCollection> activeSubtreeCollectionListCB = new ArrayList<ActiveSubtreeCollection>();
+        
         
         // now lets populate the ActiveSubtreeCollections
         //
@@ -179,18 +193,16 @@ public class TestDriver_CB_Random {
                         incumbentValueAfterRampup, bestKnownSolutionAfterRampup!=null, index) ;
                 activeSubtreeCollectionListLSI .add(astc);
                                 
-                //create a list of CB instuction trees, and an active subtree collection with all the corresponding CCA  nodes
+                //create  an active subtree collection with all the corresponding CB  nodes
                 List<CCANode> ccaSingletonLeafNodeList = new ArrayList<CCANode> ();
                 ccaSingletonLeafNodeList.add(ccaNode);
-                CBInstructionTree tree = activeSubtreeForRampUp.getCBInstructionTree(ccaNode, listOfComponentLeafsForCandidateCCANodes.get(index));
-                cbInstructionTreeList.add( tree); 
-                astc = new ActiveSubtreeCollection ( ccaSingletonLeafNodeList, tree, activeSubtreeForRampUp.instructionsFromOriginalMip, incumbentValueAfterRampup, bestKnownSolutionAfterRampup!=null, index) ;
+                astc = new ActiveSubtreeCollection ( ccaSingletonLeafNodeList, cbInstructionTreeList.get(index) , 
+                        activeSubtreeForRampUp.instructionsFromOriginalMip, incumbentValueAfterRampup, bestKnownSolutionAfterRampup!=null, index) ;
                 activeSubtreeCollectionListCB.add(astc);
                 
             }               
         }
-         
-        
+               
         //at this point, we have farmed out CCA nodes, and also
         //have the corresponding subtree collections for comparision [ each subtree collection has all the leafs of the corresponding CCA]                 
         logger.debug ("number of CCA nodes collected = "+candidateCCANodes.size()  ) ;            
@@ -371,7 +383,9 @@ public class TestDriver_CB_Random {
     
     private static boolean isLogFolderEmpty() {
         File dir = new File (LOG_FOLDER );
-        return (dir.isDirectory() && dir.list().length==ZERO);
+        boolean result= (dir.isDirectory() && dir.list().length==ZERO);
+        if (!result)  System.err.println("\n\n\nClear the log folder before starting the test." + dir.getAbsolutePath());
+        return result;
     }
     
     //simulate 1 map iteration on the cluster
@@ -418,7 +432,8 @@ public class TestDriver_CB_Random {
     }
     
     private static List< CCANode>   getRandomCCACandidates (ActiveSubtree activeSubtreeForRampUp, int NUM_PARTITIONS,
-                                                            List<List<String>> listOfComponentLeafs) throws IloException{
+                                                            List<List<String>> listOfComponentLeafs,
+                                                            List< CBInstructionTree>  cbInstructionTreeList ) throws IloException{
         List<CCANode> result = new ArrayList<CCANode> ();
         
         //first get the list of leafs in the ramped up tree
@@ -456,14 +471,19 @@ public class TestDriver_CB_Random {
             }
                
             //get the CCA node for this sublist of leafs
-            result.add( activeSubtreeForRampUp.getCandidateCCANodes( subList).get(ZERO));
+            CCANode generatedCCANode = activeSubtreeForRampUp.getCandidateCCANodes( subList, true).get(ZERO);
+            result.add( generatedCCANode);
             //make a note of which leafs this CCA node represents
             listOfComponentLeafs.add(subList);
+            //GET CB TREE for this cca node 
+            CBInstructionTree tree=activeSubtreeForRampUp.getCBInstructionTree(generatedCCANode, subList);
+            cbInstructionTreeList.add( tree); 
+            tree.print();
             
-            //logger.debug ("printing all leafs in CCA node " + result.get(-ONE+ result.size())) ;
-            //for (String id : subList) {
-                //logger.debug (id) ;
-            //}
+            logger.debug ("printing all leafs in CCA node " + result.get(-ONE+ result.size()).nodeID) ;
+            for (String id : subList) {
+                logger.debug ("sublist node " + id) ;
+            }
             
         }
             

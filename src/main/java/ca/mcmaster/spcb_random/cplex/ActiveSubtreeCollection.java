@@ -238,7 +238,7 @@ public class ActiveSubtreeCollection {
 
             }           
             logger.info("Number of trees left is "+ this.activeSubTreeList.size());  
-            printStatus();
+            
             
             //if reincarnation complete, end solution cycle
             if (reincarnationFlag) break;
@@ -250,6 +250,7 @@ public class ActiveSubtreeCollection {
             logger.info(" ActiveSubtree Collection solved to completion  "+PARTITION_ID );
         } else{
             logger.info(" ActiveSubtree Collection solved for solution cycle time  "+PARTITION_ID );
+            printStatus();
         }
         
         return new ResultOfPartitionSolve (ZERO==countReamining , incumbentLocal) ;
