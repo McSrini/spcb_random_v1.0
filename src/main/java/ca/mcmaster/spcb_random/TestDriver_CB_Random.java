@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import static java.lang.System.exit;
 import java.lang.management.*;
+import java.net.InetAddress;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -104,7 +105,8 @@ public class TestDriver_CB_Random {
         MPS_FILE_ON_DISK =   MIP_NAME_UNDER_TEST +".mps";  //linux
                 
         logger.debug ("starting ramp up " + MPS_FILE_ON_DISK + " partitions " + NUM_PARTITIONS +
-                " solution cycle time " + SOLUTION_CYCLE_TIME_MINUTES + " tree slice " + TIME_SLICE_IN_MINUTES_PER_ACTIVE_SUBTREE) ;  
+                " solution cycle time " + SOLUTION_CYCLE_TIME_MINUTES + " tree slice " + TIME_SLICE_IN_MINUTES_PER_ACTIVE_SUBTREE
+                +                 " on host " + InetAddress.getLocalHost().getHostName()) ;  
         ActiveSubtree activeSubtreeForRampUp = new ActiveSubtree () ;
         activeSubtreeForRampUp.solve( RAMP_UP_TO_THIS_MANY_LEAFS, PLUS_INFINITY, MILLION, true, false); 
                        
@@ -288,8 +290,15 @@ public class TestDriver_CB_Random {
         } 
         logger.debug(" CB test ended at iteration Number "+iterationNumber + " with incumbent "+incumbentGlobal+
                  " and number of leafs solved " + numNodeRelaxationsSolved);
-         
-        
+        //print status of every partition
+        for (int partitionNumber = ZERO;partitionNumber < NUM_PARTITIONS; partitionNumber++ ){
+
+            ActiveSubtreeCollection astc= activeSubtreeCollectionListCB.get(partitionNumber);
+            logger.debug ("partition "+partitionNumber   +
+                    " trees count " + astc.getNumTrees()+" raw nodes count "+ astc.getPendingRawNodeCount() + " max trees created " + astc.maxTreesCreatedDuringSolution);
+            astc.endAll();
+
+        }//print status of every partition
         
         
         

@@ -61,19 +61,21 @@ public class ConstantsAndParameters {
     public static   double MINIMUM_TIME_SLICE_IN_MINUTES_PER_ACTIVE_SUBTREE = 0.5 ;//30 seconds
     public static final int SOLUTION_CYCLE_TIME_MINUTES = 4;
     
-    /*
+    /* 
     public static   String MIP_NAME_UNDER_TEST ="rmatr200-p10";
-    public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 1800;    
+    public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 1200;    
     public static   double MIP_WELLKNOWN_SOLUTION =     2017;  
-    public static  int NUM_PARTITIONS =600;
+    public static  int NUM_PARTITIONS =300;
     */
     
-    /*    
+    
+     /*    
     public static   String MIP_NAME_UNDER_TEST ="a1c1s1";
-    public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 3000;    
+    public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 6000;    
     public static   double MIP_WELLKNOWN_SOLUTION =  11503.444125    ;  
-    public static  int NUM_PARTITIONS =75;
+    public static  int NUM_PARTITIONS =150;
     */
+     
     
     /*
     public static   String MIP_NAME_UNDER_TEST ="protfold";
@@ -89,19 +91,14 @@ public class ConstantsAndParameters {
     public static  int NUM_PARTITIONS =300;
     */
     
-    /*
+     
     public static   String MIP_NAME_UNDER_TEST ="nu120-pr3";
     public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 3000;     
     public static   double MIP_WELLKNOWN_SOLUTION =   28130   ;  
-    public static  int NUM_PARTITIONS =600;
-    */
-    
-    
-    public static   String MIP_NAME_UNDER_TEST ="nu120-pr3";
-    public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 30;   // or 5000    
-    public static   double MIP_WELLKNOWN_SOLUTION =   28130   ;  
-    public static  int NUM_PARTITIONS =5;
+    public static  int NUM_PARTITIONS =300;
      
+    
+    
     
     public static boolean COLLECT_ALL_METRICS = true;
     public static int SAVE_NODE_FILE_TO_DISK = -1;
