@@ -289,7 +289,7 @@ public class TestDriver_CB_Random {
             numNodeRelaxationsSolved += astc.getNumNodeRelaxationsSolved();
         } 
         logger.debug(" CB test ended at iteration Number "+iterationNumber + " with incumbent "+incumbentGlobal+
-                 " and number of leafs solved " + numNodeRelaxationsSolved);
+                 " and number of leafs branched " + numNodeRelaxationsSolved);
         //print status of every partition
         for (int partitionNumber = ZERO;partitionNumber < NUM_PARTITIONS; partitionNumber++ ){
 
@@ -362,7 +362,7 @@ public class TestDriver_CB_Random {
                 numNodeRelaxationsSolved += astc.getNumNodeRelaxationsSolved();
             } 
             logger.debug(" Individual solve test with "+ nodeSelectionStrategy +" ended at iteration Number "+
-                    iterationNumber+ " with incumbent "+incumbentGlobal + " and number of leafs solved " + numNodeRelaxationsSolved);
+                    iterationNumber+ " with incumbent "+incumbentGlobal + " and number of leafs branched " + numNodeRelaxationsSolved);
             //print status of every partition
             for (int partitionNumber = ZERO;partitionNumber < NUM_PARTITIONS; partitionNumber++ ){
 

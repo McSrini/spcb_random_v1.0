@@ -59,7 +59,7 @@ public class ConstantsAndParameters {
    
     public static   int TIME_SLICE_IN_MINUTES_PER_ACTIVE_SUBTREE = 2 ;    
     public static   double MINIMUM_TIME_SLICE_IN_MINUTES_PER_ACTIVE_SUBTREE = 0.5 ;//30 seconds
-    public static final int SOLUTION_CYCLE_TIME_MINUTES = 4;
+    public static final int SOLUTION_CYCLE_TIME_MINUTES = 8;
     
     /* 
     public static   String MIP_NAME_UNDER_TEST ="rmatr200-p10";
@@ -77,12 +77,7 @@ public class ConstantsAndParameters {
     */
      
     
-    /*
-    public static   String MIP_NAME_UNDER_TEST ="protfold";
-    public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 6000;    
-    public static   double MIP_WELLKNOWN_SOLUTION =   -31   ;  
-    public static  int NUM_PARTITIONS =150;
-    */
+    
     
     /*
     public static   String MIP_NAME_UNDER_TEST ="atlanta-ip";
@@ -91,13 +86,24 @@ public class ConstantsAndParameters {
     public static  int NUM_PARTITIONS =300;
     */
     
-     
+    /* 
     public static   String MIP_NAME_UNDER_TEST ="nu120-pr3";
     public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 3000;     
     public static   double MIP_WELLKNOWN_SOLUTION =   28130   ;  
     public static  int NUM_PARTITIONS =300;
+     */
+        
+    /*
+    public static   String MIP_NAME_UNDER_TEST ="protfold";
+    public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 3000;     
+    public static   double MIP_WELLKNOWN_SOLUTION =   -31    ;  
+    public static  int NUM_PARTITIONS =75;
+    */
      
-    
+    public static   String MIP_NAME_UNDER_TEST ="probportfolio";
+    public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 6000 ;     
+    public static   double MIP_WELLKNOWN_SOLUTION =  16.7342    ;  
+    public static  int NUM_PARTITIONS =150;
     
     
     public static boolean COLLECT_ALL_METRICS = true;

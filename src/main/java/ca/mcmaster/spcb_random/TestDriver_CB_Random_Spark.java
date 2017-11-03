@@ -69,6 +69,10 @@ public class TestDriver_CB_Random_Spark {
           
         //MPS_FILE_ON_DISK =  "F:\\temporary files here\\"+MIP_NAME_UNDER_TEST+".mps"; //windows
         MPS_FILE_ON_DISK =   MIP_NAME_UNDER_TEST +".mps";  //linux
+        
+        
+        logger.error("Free memory on each partition after each test - currently not implemented.");
+        exit(ONE);
                 
         //Driver for distributing the CPLEX  BnB solver on Spark
         SparkConf conf = new SparkConf().setAppName("SparcPlex CCA V1.4");
