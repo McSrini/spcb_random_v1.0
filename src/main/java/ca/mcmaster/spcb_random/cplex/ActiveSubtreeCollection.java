@@ -65,7 +65,7 @@ public class ActiveSubtreeCollection {
     public long numNodeRelaxationsSolvedByCompletedTrees=ZERO;
     
     static {
-        logger.setLevel(Level.DEBUG);
+        logger.setLevel(Level.OFF);
         PatternLayout layout = new PatternLayout("%5p  %d  %F  %L  %m%n");     
         try {
             logger.addAppender(new  RollingFileAppender(layout,LOG_FOLDER+ActiveSubtreeCollection.class.getSimpleName()+ LOG_FILE_EXTENSION));
@@ -88,6 +88,10 @@ public class ActiveSubtreeCollection {
         //this.promoteCCANodeIntoActiveSubtree( this.getRawNodeWithBestLPRelaxation(), false);
         
         PARTITION_ID=id;
+                
+        logger.debug("params are collect metrics="+ (COLLECT_ALL_METRICS?ONE:ZERO) + " savenodefile= "+ SAVE_NODE_FILE_TO_DISK 
+                      +" collectNumNodes="+                       (COLLECT_NUM_NODES_SOLVED?ONE:ZERO)) ;
+        
     }
     
     public void setCutoff (double cutoff) {

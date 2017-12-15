@@ -99,6 +99,8 @@ public class ActiveSubtree {
             exit(1);
         }
           
+        logger.debug("params are collect metrics="+ (COLLECT_ALL_METRICS?ONE:ZERO) + " savenodefile= "+ SAVE_NODE_FILE_TO_DISK 
+                      +" collectNumNodes="+                       (COLLECT_NUM_NODES_SOLVED?ONE:ZERO)) ;
     }
     
     public ActiveSubtree (  ) throws Exception{
@@ -115,6 +117,7 @@ public class ActiveSubtree {
         rampUpNodeHandler = new RampUpNodeHandler(    );                
         leafFetchNodeHandler = new LeafFetchingNodeHandler(); 
     
+        //cplex.setOut(null);
     }
     
     public void end(){
@@ -242,8 +245,11 @@ public class ActiveSubtree {
         
         if (saveToDisk>= ZERO) {
             cplex.setParam(IloCplex.Param.MIP.Strategy.File, saveToDisk);
-            cplex.setParam(IloCplex.Param.WorkMem,  WORK_MEM);    //low mem!
-        }     
+            //cplex.setParam(IloCplex.Param.WorkMem,  WORK_MEM);    //low mem!
+        }     else{
+            //no node files, avoids "no callback info on compressed node" errors
+            cplex.setParam(IloCplex.Param.MIP.Strategy.File, ZERO);
+        }
         
         cplex.solve();
         
@@ -286,13 +292,14 @@ public class ActiveSubtree {
         if (isRampUp) {
             rampUpNodeHandler.setLeafCountLimit(leafCountLimit);
             this.cplex.use(rampUpNodeHandler) ;
+            cplex.setParam(IloCplex.Param.MIP.Strategy.Backtrack, ZERO);    
         }  
         
         
         if (setCutoff) setCutoffValue(  cutoff);
         setTimeLimitMinutes   (  timeLimitMinutes );
               
-        cplex.setParam(IloCplex.Param.MIP.Strategy.File, TWO);  //low mem   
+        //cplex.setParam(IloCplex.Param.MIP.Strategy.File, TWO);  //low mem   
         cplex.solve();
         
         //solve complete - now get the active leafs

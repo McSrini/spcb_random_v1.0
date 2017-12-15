@@ -219,11 +219,12 @@ public class TestDriver_CB_Random {
         
         //PREPARATIONS COMPLETE
         logger.debug ("Ramp up created " +activeSubtreeForRampUp.getActiveLeafCount() +" leafs.") ;
-        logger.warn  ("NUM_PARTITIONS is actually " + activeSubtreeCollectionListCB.size() + " requested was " +  NUM_PARTITIONS);
+        logger.warn  ("NUM_PARTITIONS is actually " + activeSubtreeCollectionListCB.size() + " and requested was " +  NUM_PARTITIONS);
         if (activeSubtreeCollectionListCB.size()!=NUM_PARTITIONS) {
             exit(1);
         }
         activeSubtreeForRampUp.end();
+       
        
         
         //TEST 1 uses CCA
@@ -308,6 +309,9 @@ public class TestDriver_CB_Random {
         
         //repeat test for all node selection strategies
         for(NodeSelectionStartegyEnum nodeSelectionStrategy  :NodeSelectionStartegyEnum.values()){
+            
+            //in this test we skip sbf
+            //if (NodeSelectionStartegyEnum.STRICT_BEST_FIRST.equals(nodeSelectionStrategy ))  continue; 
             
             if (!COLLECT_ALL_METRICS){
                 //skip LSI BEF

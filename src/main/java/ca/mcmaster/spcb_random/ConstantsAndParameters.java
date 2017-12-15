@@ -59,22 +59,49 @@ public class ConstantsAndParameters {
    
     public static   int TIME_SLICE_IN_MINUTES_PER_ACTIVE_SUBTREE = 2 ;    
     public static   double MINIMUM_TIME_SLICE_IN_MINUTES_PER_ACTIVE_SUBTREE = 0.5 ;//30 seconds
-    public static final int SOLUTION_CYCLE_TIME_MINUTES = 8;
+    public static final int SOLUTION_CYCLE_TIME_MINUTES = 4;
     
-    /* 
-    public static   String MIP_NAME_UNDER_TEST ="rmatr200-p10";
-    public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 1200;    
-    public static   double MIP_WELLKNOWN_SOLUTION =     2017;  
-    public static  int NUM_PARTITIONS =300;
+    
+    public static   String MIP_NAME_UNDER_TEST ="p100x";
+    public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 5000;    
+    public static   double MIP_WELLKNOWN_SOLUTION =     47878 ;  
+    public static  int NUM_PARTITIONS =5;
+    public static boolean COLLECT_ALL_METRICS = false;
+    public static int SAVE_NODE_FILE_TO_DISK = 3;
+    public static boolean COLLECT_NUM_NODES_SOLVED = false;
+     
+    
+    /*
+    public static   String MIP_NAME_UNDER_TEST ="protfold";
+    public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 3000;     
+    public static   double MIP_WELLKNOWN_SOLUTION =   -31    ;  
+    public static  int NUM_PARTITIONS =75;
+    public static boolean COLLECT_ALL_METRICS = true;
+    public static int SAVE_NODE_FILE_TO_DISK = 3;
+    public static boolean COLLECT_NUM_NODES_SOLVED = false;
     */
     
     
-     /*    
-    public static   String MIP_NAME_UNDER_TEST ="a1c1s1";
-    public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 6000;    
-    public static   double MIP_WELLKNOWN_SOLUTION =  11503.444125    ;  
-    public static  int NUM_PARTITIONS =150;
+    /*
+    public static   String MIP_NAME_UNDER_TEST ="wnq";//wnq-n100-mw99-14";
+    public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 500;    
+    public static   double MIP_WELLKNOWN_SOLUTION =   259 ;  
+    public static  int NUM_PARTITIONS =50;    
+    public static boolean COLLECT_ALL_METRICS = false;
+    public static int SAVE_NODE_FILE_TO_DISK = 3;
+    public static boolean COLLECT_NUM_NODES_SOLVED = false;
     */
+    
+    /*
+    public static   String MIP_NAME_UNDER_TEST ="b2c1s1";
+    public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 200;    
+    public static   double MIP_WELLKNOWN_SOLUTION =  25687.9  ;  
+    public static  int NUM_PARTITIONS =50;
+    public static boolean COLLECT_ALL_METRICS = false;
+    public static int SAVE_NODE_FILE_TO_DISK = 3;
+    public static boolean COLLECT_NUM_NODES_SOLVED = false;
+    */
+    
      
     
     
@@ -93,23 +120,50 @@ public class ConstantsAndParameters {
     public static  int NUM_PARTITIONS =300;
      */
         
-    /*
+     /*
     public static   String MIP_NAME_UNDER_TEST ="protfold";
     public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 3000;     
     public static   double MIP_WELLKNOWN_SOLUTION =   -31    ;  
     public static  int NUM_PARTITIONS =75;
     */
      
+    /*
     public static   String MIP_NAME_UNDER_TEST ="probportfolio";
-    public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 6000 ;     
+    public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 1800 ;     
     public static   double MIP_WELLKNOWN_SOLUTION =  16.7342    ;  
     public static  int NUM_PARTITIONS =150;
+    */
+        
+    /*
+    public static   String MIP_NAME_UNDER_TEST ="p6b";
+    public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 150 ;     
+    public static   double MIP_WELLKNOWN_SOLUTION =   -63   ;  
+    public static  int NUM_PARTITIONS =50;    
+    public static boolean COLLECT_ALL_METRICS = false;
+    public static int SAVE_NODE_FILE_TO_DISK = 3;
+    //public static int WORK_MEM = 1024;
+    public static boolean COLLECT_NUM_NODES_SOLVED = false;
+    */
     
-    
+    /*
+     public static   String MIP_NAME_UNDER_TEST ="d10200";
+    public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 500 ;     
+    public static   double MIP_WELLKNOWN_SOLUTION =   12430   ;  
+    public static  int NUM_PARTITIONS =50;  
+    public static boolean COLLECT_ALL_METRICS = false;
+    public static int SAVE_NODE_FILE_TO_DISK = 3;
+    public static boolean COLLECT_NUM_NODES_SOLVED = false;
+    */
+     
+    /*
     public static boolean COLLECT_ALL_METRICS = true;
     public static int SAVE_NODE_FILE_TO_DISK = -1;
-    public static int WORK_MEM = 1024;
+    //public static int WORK_MEM = 1024;
     public static boolean COLLECT_NUM_NODES_SOLVED = true;
+    */
+    
+     
+     
     
     public static double EXPECTED_LEAFS_PER_PARTITION = (RAMP_UP_TO_THIS_MANY_LEAFS +DOUBLE_ZERO)/NUM_PARTITIONS;
     
