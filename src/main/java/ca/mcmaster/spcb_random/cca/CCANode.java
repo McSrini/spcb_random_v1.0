@@ -62,7 +62,7 @@ public class CCANode  extends TreeNode implements Serializable {
     public List<String> pruneList=new ArrayList<String>();
     
     static {
-        logger.setLevel(Level.DEBUG);
+        logger.setLevel(Level.OFF);
         PatternLayout layout = new PatternLayout("%5p  %d  %F  %L  %m%n");     
         try {
             logger.addAppender(new  RollingFileAppender(layout,LOG_FOLDER+ CCANode.class.getSimpleName()+ LOG_FILE_EXTENSION));

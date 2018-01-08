@@ -251,6 +251,7 @@ public class ActiveSubtree {
             cplex.setParam(IloCplex.Param.MIP.Strategy.File, ZERO);
         }
         
+        if (USE_MULTITHREADING_WITH_THIS_MANY_THREADS > ONE)  cplex.setParam(IloCplex.Param.Threads, USE_MULTITHREADING_WITH_THIS_MANY_THREADS); 
         cplex.solve();
         
         if (collect_LSI_BEF_Metrics) {

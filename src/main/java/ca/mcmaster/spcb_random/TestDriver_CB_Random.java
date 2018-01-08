@@ -168,8 +168,7 @@ public class TestDriver_CB_Random {
             
             if (ccaNode.pruneList.size() >=  ZERO) { //accept every candidate
                 
-                logger.debug (""+ccaNode.nodeID + " has good factor " +ccaNode.getPackingFactor() + 
-                        " and prune list size " + ccaNode.pruneList.size() + " depth from root "+ ccaNode.depthOfCCANodeBelowRoot) ; 
+                // logger.debug (""+ccaNode.nodeID + " has good factor " +ccaNode.getPackingFactor() +                  " and prune list size " + ccaNode.pruneList.size() + " depth from root "+ ccaNode.depthOfCCANodeBelowRoot) ; 
                  
                 //          qxxy               dod     
                  
@@ -209,10 +208,8 @@ public class TestDriver_CB_Random {
         //have the corresponding subtree collections for comparision [ each subtree collection has all the leafs of the corresponding CCA]                 
         logger.debug ("number of CCA nodes collected = "+candidateCCANodes.size()  ) ;            
         for ( int index = ZERO; index <  candidateCCANodes.size(); index++){
-            logger.debug("CCA node is : " + candidateCCANodes.get(index) + 
-                    " and its prune list size is " + candidateCCANodes.get(index).pruneList.size()) ;
-            logger.debug ("number of leafs in corresponding active subtree collection SBF is = " +     
-                    (activeSubtreeCollectionListSBF.get(index).getPendingRawNodeCount() + activeSubtreeCollectionListSBF.get(index).getNumTrees()) );
+            //logger.debug("CCA node is : " + candidateCCANodes.get(index) +                     " and its prune list size is " + candidateCCANodes.get(index).pruneList.size()) ;
+            //logger.debug ("number of leafs in corresponding active subtree collection SBF is = " +                         (activeSubtreeCollectionListSBF.get(index).getPendingRawNodeCount() + activeSubtreeCollectionListSBF.get(index).getNumTrees()) );
         }
          
               
@@ -390,7 +387,11 @@ public class TestDriver_CB_Random {
         
     private static boolean isHaltFilePresent (){
         File file = new File("haltfile.txt");
-         
+        if (file.exists()) {
+            //System.err.println("halt file exist" + file.getAbsolutePath());
+        }else{
+            //System.err.println("halt file does not exist" + file.getAbsolutePath());
+        }
         return file.exists();
     }
     
@@ -458,7 +459,7 @@ public class TestDriver_CB_Random {
         
         //logger.debug ("printing all leafs in ramp up") ;
         for (String id : node_ID_List) {
-            logger.debug (id ) ;
+            //logger.debug (id ) ;
         }
         
                 
@@ -493,9 +494,9 @@ public class TestDriver_CB_Random {
             cbInstructionTreeList.add( tree); 
             tree.print();
             
-            logger.debug ("printing all leafs in CCA node " + result.get(-ONE+ result.size()).nodeID) ;
+           // logger.debug ("printing all leafs in CCA node " + result.get(-ONE+ result.size()).nodeID) ;
             for (String id : subList) {
-                logger.debug ("sublist node " + id) ;
+                //logger.debug ("sublist node " + id) ;
             }
             
         }

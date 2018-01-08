@@ -39,7 +39,7 @@ public class CBInstructionGenerator {
     
     
     static {
-        logger.setLevel(Level.DEBUG);
+        logger.setLevel(Level.OFF);
         PatternLayout layout = new PatternLayout("%5p  %d  %F  %L  %m%n");     
         try {
             logger.addAppender(new  RollingFileAppender(layout,LOG_FOLDER+CBInstructionGenerator.class.getSimpleName()+ LOG_FILE_EXTENSION));

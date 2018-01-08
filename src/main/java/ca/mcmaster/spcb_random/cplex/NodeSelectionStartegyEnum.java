@@ -10,7 +10,9 @@ package ca.mcmaster.spcb_random.cplex;
  * @author tamvadss
  */
 public enum NodeSelectionStartegyEnum {
+   
     STRICT_BEST_FIRST,
-    BEST_ESTIMATE_FIRST,
-    LOWEST_SUM_INFEASIBILITY_FIRST;
+    BEST_ESTIMATE_FIRST ,
+     LOWEST_SUM_INFEASIBILITY_FIRST
+    ;
 }

@@ -57,18 +57,78 @@ public class ConstantsAndParameters {
     public static  double CCA_PACKING_FACTOR_MAXIMUM_ALLOWED =  0.0;
     
    
-    public static   int TIME_SLICE_IN_MINUTES_PER_ACTIVE_SUBTREE = 2 ;    
+    public static   int TIME_SLICE_IN_MINUTES_PER_ACTIVE_SUBTREE = 4 ;    
     public static   double MINIMUM_TIME_SLICE_IN_MINUTES_PER_ACTIVE_SUBTREE = 0.5 ;//30 seconds
-    public static final int SOLUTION_CYCLE_TIME_MINUTES = 4;
+    public static final int SOLUTION_CYCLE_TIME_MINUTES = 8;
     
-    
-    public static   String MIP_NAME_UNDER_TEST ="p100x";
-    public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 5000;    
-    public static   double MIP_WELLKNOWN_SOLUTION =     47878 ;  
-    public static  int NUM_PARTITIONS =5;
+    public static   String MIP_NAME_UNDER_TEST ="neos-847302" ;
+    public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 300  ;    
+    public static   double MIP_WELLKNOWN_SOLUTION =    4 ;  
+    public static  int NUM_PARTITIONS  =50;
     public static boolean COLLECT_ALL_METRICS = false;
     public static int SAVE_NODE_FILE_TO_DISK = 3;
     public static boolean COLLECT_NUM_NODES_SOLVED = false;
+    
+    /*
+    public static   String MIP_NAME_UNDER_TEST ="wnq" ;
+    public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 75000  ;    
+    public static   double MIP_WELLKNOWN_SOLUTION =   259   ;  
+    public static  int NUM_PARTITIONS  =5;
+    public static boolean COLLECT_ALL_METRICS = false;
+    public static int SAVE_NODE_FILE_TO_DISK = 3;
+    public static boolean COLLECT_NUM_NODES_SOLVED = false;
+    */
+    
+    /*
+    public static   String MIP_NAME_UNDER_TEST ="r80x800" ;
+    public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 500  ;    
+    public static   double MIP_WELLKNOWN_SOLUTION =    5332  ;  
+    public static  int NUM_PARTITIONS  =50;
+    public static boolean COLLECT_ALL_METRICS = false;
+    public static int SAVE_NODE_FILE_TO_DISK = 3;
+    public static boolean COLLECT_NUM_NODES_SOLVED = false;
+    */
+    
+    /*
+    public static   String MIP_NAME_UNDER_TEST ="swath" ;
+    public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 500  ;    
+    public static   double MIP_WELLKNOWN_SOLUTION =    467.407   ;  
+    public static  int NUM_PARTITIONS  =50;
+    public static boolean COLLECT_ALL_METRICS = false;
+    public static int SAVE_NODE_FILE_TO_DISK = 3;
+    public static boolean COLLECT_NUM_NODES_SOLVED = false;
+    */
+    
+    /*
+    public static   String MIP_NAME_UNDER_TEST ="p6b" ;
+    public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 50000  ;    
+    public static   double MIP_WELLKNOWN_SOLUTION =   -63    ;  
+    public static  int NUM_PARTITIONS  =5;
+    public static boolean COLLECT_ALL_METRICS = false;
+    public static int SAVE_NODE_FILE_TO_DISK = 3;
+    public static boolean COLLECT_NUM_NODES_SOLVED = false;
+    */
+    
+    /*
+    public static   String MIP_NAME_UNDER_TEST ="p100x";
+    public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 250;    
+    public static   double MIP_WELLKNOWN_SOLUTION =     47878 ;  
+    public static  int NUM_PARTITIONS =50;
+    public static boolean COLLECT_ALL_METRICS = false;
+    public static int SAVE_NODE_FILE_TO_DISK = 3;
+    public static boolean COLLECT_NUM_NODES_SOLVED = false;
+    */
+    
+    
+    /*
+    public static   String MIP_NAME_UNDER_TEST ="neos-948126";
+    public static   int RAMP_UP_TO_THIS_MANY_LEAFS = 500;    
+    public static   double MIP_WELLKNOWN_SOLUTION =      2607 ;  
+    public static  int NUM_PARTITIONS =50;
+    public static boolean COLLECT_ALL_METRICS = true;
+    public static int SAVE_NODE_FILE_TO_DISK = 3;
+    public static boolean COLLECT_NUM_NODES_SOLVED = true;
+    */
      
     
     /*
@@ -167,6 +227,6 @@ public class ConstantsAndParameters {
     
     public static double EXPECTED_LEAFS_PER_PARTITION = (RAMP_UP_TO_THIS_MANY_LEAFS +DOUBLE_ZERO)/NUM_PARTITIONS;
     
-    
+    public static int USE_MULTITHREADING_WITH_THIS_MANY_THREADS = 32;
     
 }
